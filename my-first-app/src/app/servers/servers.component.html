@@ -1,0 +1,19 @@
+<p>Server Name</p>
+<!-- <input type="text" 
+class="form-control"
+(input)="onUpdateServerName($event)" > -->
+
+<input type="text" 
+class="form-control"
+[(ngModel)]="serverName" >
+
+
+<button class="btn btn-primary" [disabled]="!allowNewServer" (click)="onServerCreate()">Add Server</button>
+<!-- <p>{{serverCreationStatus}}</p> -->
+<p *ngIf="serverCreated; else noServer">{{serverCreationStatus}}</p>
+<ng-template #noServer>
+    <p>
+        No Server was Created.
+    </p>
+</ng-template>
+<app-server *ngFor="let server of servers"></app-server>

@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <div #mainHeader></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3"></div>
+    <div class="col-xs-6">
+      <app-game-controller (counterElapsed)="onCounterElapsed($event)"></app-game-controller>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <app-odd-capture [capturedValue]="lastReceivedNumber"></app-odd-capture>
+    </div>
+    <div class="col-xs-6">
+      <app-even-capture [capturedValue]="lastReceivedNumber"></app-even-capture>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,12 @@
+<div class="panel panel-default">
+  <div class="panel panel-heading">
+    Game Controller
+  </div>
+  <div class="panel panel-body">
+    <button class="btn btn-default" (click)="onPlayButtonPress()">Play <span class="glyphicon glyphicon-play"></span></button>
+    <button class="btn btn-danger" (click)="onPauseButtonPress()">Pause <span class="glyphicon glyphicon-pause"></span></button>
+  </div>
+  <div class="panel panel-footer">
+    Current Status:{{gameStatus}}
+  </div>
+</div>

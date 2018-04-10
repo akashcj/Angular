@@ -1,0 +1,19 @@
+<button class="btn btn-default" (click)="onButtonClick()">
+  {{buttonText}}
+</button>
+
+<hr>
+<p *ngIf = "showParagraph">
+  This paragraph is displayed only on the buttonclick
+</p>
+
+<p>Button Click Log:</p>
+<p *ngIf="clickedTimes.length == 0; else ButtonClickLog">
+  The button was not clicked yet</p>
+<ng-template #ButtonClickLog>
+  <div>
+    You clicked the button!!!
+    <li *ngFor="let thing of clickedTimes; let i = index" 
+    [ngClass]='{blueWhite:i >= 4}'>{{thing}}</li>
+  </div>
+</ng-template>

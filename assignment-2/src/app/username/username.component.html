@@ -1,0 +1,6 @@
+<h3>Username</h3>
+<p><input [(ngModel)]="username" class="form-control"></p>
+
+<p>{{username}}</p>
+
+<button class="btn btn-default" [disabled]="username==''" (click)="ResetUsername()">Reset Username</button>
