@@ -20,4 +20,10 @@ export class UsersComponent {
       name: 'Chris'
     }
   ];
+
+  onButtonClick()
+  {
+    console.log("You clicked me!!!");
+  }
+
 }

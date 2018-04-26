@@ -9,11 +9,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ServersComponent implements OnInit {
   private servers: {id: number, name: string, status: string}[] = [];
+  selectedId:number;
 
   constructor(private serversService: ServersService, private router:Router, private route:ActivatedRoute) { }
 
   ngOnInit() {
     this.servers = this.serversService.getServers();
+    this.selectedId = 1;
+  }
+
+  updateSelectedId(id)
+  {
+    this.selectedId = id;
   }
 
 }
