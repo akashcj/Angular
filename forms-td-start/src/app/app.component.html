@@ -14,7 +14,7 @@
             name="username" 
             required>
           </div>
-          <p class="help-block" *ngIf="!userData.isValid && userData.touched">Please enter valid User Data</p>
+          <p class="help-block" *ngIf="!userData.valid && userData.touched">Please enter valid User Data</p>
           <button class="btn btn-default" type="button" (click)="suggestUserName()">Suggest an Username</button>
           <div class="form-group">
             <label for="email">Mail</label>
@@ -55,5 +55,18 @@
         <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
       </form>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <hr>
+      <div *ngIf="submitted">
+        <p>You entered</p>
+        <p>username:{{user.username}}</p>
+        <p>email:{{user.email}}</p>
+        <p>SecretQuestion:{{user.secretQuestion}}</p>
+        <p>answer:{{user.answer}}</p>
+        <p>gender:{{user.gender}}</p>
+    </div>
+   </div>
   </div>
 </div>

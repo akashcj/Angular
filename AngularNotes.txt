@@ -1,2 +1,8 @@
+---------------------------FORMS--------------
+A form control should be associated with an ngModel or ngGroup attribute. If we want to refer to the control directly in code, we need to then specify something like #email="ngModel" to use things like email.value in the backend ts.
+To use ngGroup, we need to specify a string like ngGroup="UserData". This string is unique to the html, but not used as a variable in the ts. For that, use #userData = ngGroup, and use userData as the backend variable
+If we need a default value to be populated, we can set [ngModel]=<default_value_var_in_ts>
+If we need to know the vaue immediately, we can use 2 way binding with [(ngModel)]=<ts_variable> 
 this.signupForm.setValue({entire form object}): sets to value for all controls of the form
 this.signupForm.form.patchValue({just the form object we wish to change}): sets the value for only the listed form controls
+We can extract the data from the form by using the form object.value.<item name>
