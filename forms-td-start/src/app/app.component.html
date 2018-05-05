@@ -3,7 +3,7 @@
     <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
       <form (ngSubmit)="onSubmit()" #f="ngForm">
         <div id="user-data">
-          <div class="form-group">
+          <div class="form-group" ngModelGroup="UserData" #userData = "ngModelGroup">
             <label for="username">Username</label>
             <input 
             type="text" 
@@ -12,12 +12,9 @@
             ngModel 
             [ngModel]="defaultUsername"
             name="username" 
-            required
-            #username="ngModel">
-            <span class="help-block" *ngIf="username.invalid && username.touched">
-              Please enter a username
-            </span>
+            required>
           </div>
+          <p class="help-block" *ngIf="!userData.isValid && userData.touched">Please enter valid User Data</p>
           <button class="btn btn-default" type="button">Suggest an Username</button>
           <div class="form-group">
             <label for="email">Mail</label>
