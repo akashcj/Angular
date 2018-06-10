@@ -2,4 +2,6 @@
 ------------
 ngModel is part of the FormsModule which can be imported from '@angular/forms';
 
+angular.json needs to have the styles section updated with the bootstrap styling
+
 
