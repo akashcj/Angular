@@ -1,0 +1,5 @@
+10 Jun 2018
+------------
+ngModel is part of the FormsModule which can be imported from '@angular/forms';
+
+
