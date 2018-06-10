@@ -5,8 +5,15 @@
         <div class="form-group" ngModelGroup="FormData" #formData="ngModelGroup">
           <div id="email-section">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" ngModel name="email" required>
+            <input type="email"
+             class="form-control" 
+             ngModel 
+             name="email" 
+             #email="ngModel"
+             required
+             email>
           </div>
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email</span>
           <div id="subscription-section">
             <label for="subscriptionType">Subscription Type:</label>
             <select class="form-control"
@@ -20,9 +27,10 @@
           </div>
           <div id="password-section">
             <label for="password">Password:</label>
-            <input class="form-control" type="password" ngModel name="password" required>
+            <input class="form-control" id="password" type="password" ngModel name="password" required #password="ngModel">
           </div>
         </div>
+        <span class="help-block" *ngIf="!password.valid && password.touched">Please enter a valid password</span>
         <button type="submit" [disabled]="!formData.valid" class="btn btn-primary">Submit</button>
 
         <div class="help-block" 
