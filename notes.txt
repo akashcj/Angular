@@ -4,4 +4,15 @@ ngModel is part of the FormsModule which can be imported from '@angular/forms';
 
 angular.json needs to have the styles section updated with the bootstrap styling
 
+11 Jun 2018
+-------------
+The index.html file in the angular project is the single page served by Angular
+In the default index.html, there is a section called <app-root></app-root>. This is a default component which is served by Angular. This component is substituted with the code in the app.component.html file, which would be using the app.component.ts and other files.
+
+In the browser, Angular injects some script files which contains the code we write. 
+The first file which is executed is main.ts, where the initial module is loaded or bootstrapped --> The line is platformBrowserDynamic().bootstrapModule(AppModule).
+So, the AppModule is loaded from app.module.ts, where again, it bootstraps the AppComponent --> bootstrap: [AppComponent].
+Now, Angular loads the AppComponent from app.component.ts, where it sees a "selector" defined as "app-root". This is how Angular understands what <app-root> is in the index.html file, and replaces it with whatever code we have written for that to resolve to.
+
+
 
