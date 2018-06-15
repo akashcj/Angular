@@ -14,5 +14,38 @@ The first file which is executed is main.ts, where the initial module is loaded 
 So, the AppModule is loaded from app.module.ts, where again, it bootstraps the AppComponent --> bootstrap: [AppComponent].
 Now, Angular loads the AppComponent from app.component.ts, where it sees a "selector" defined as "app-root". This is how Angular understands what <app-root> is in the index.html file, and replaces it with whatever code we have written for that to resolve to.
 
+14 Jun 2018
+___________
+COMPONENTS -- Initial Primer
 
+This is basically a markup along with a chunk of functionality
+
+First, create a folder for all the files for the component. e.g. for a component called server, we can have a folder named 'server'.
+Now, we need to create a .ts file which exports the class which should implement the functionality provided by our component
+i.e. 
+
+export class ServerComponent{
+    
+}
+
+Second, declare the class is a component using an @Component decorator
+@Component(
+{
+    selector:'app-server',
+    templateUrl: './server.component.html'
+})
+This decorator should contain a selector, which is the html used to create this component in the markup -- in the above case <app-server></app-server>. However, these may also be of the form '[app-server]', or of the form '.app-server', in which case, they will have to be attributes of an element [e.g <div app-server></div>], or a css class of an element [e.g. <div class="app-server"></div>] to have the same effect. However, the element selector is the most used.
+
+Third, create a file called ./server.component.html, and put the markup which needs to be displayed when the component is invoked
+
+Fourth, add the component to the app.module.ts, in it @NgModule decorator, under the declarations section. It would require importing the component from the component name.
+
+Finally, add a tag with the selector defined in the component to a markup file, e.g. app.component.html, like <app-server></app-server>
+
+Now, invoking the webpage displayed, we see the markup defined in the templateUrl, in place of the selector tags.
+
+COMPONENTS -- Creating using the @angular cli
+_____________________________________________
+ng generate component servers 
+This will create a component called 'servers' inside a 'servers' folder in our 'app' folder
 
