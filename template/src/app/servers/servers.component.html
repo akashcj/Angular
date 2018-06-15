@@ -1,7 +1,11 @@
-<input type="text" (input)="onTextChange($event)" class="form-control">
-<p>{{serverName}}</p>
+<!-- <input type="text" (input)="onTextChange($event)" class="form-control"> -->
+<input type="text" [(ngModel)]="serverName" class="form-control">
+<!-- <p>{{serverName}}</p> -->
+
+
 <button class="btn btn-primary" [disabled]="!allowNewServer" (click)="onServerCreated()">Add Server</button>
-<p>{{serverCreatedStatus}}</p>
+<p *ngIf="serverCreated;">{{serverCreatedStatus}}</p>
+<!-- <p>{{serverCreatedStatus}}</p> -->
 <app-server></app-server>
 <app-server></app-server>
 
