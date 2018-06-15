@@ -1,6 +1,7 @@
-
-<h3>Just testing if this works</h3>
+<input type="text" (input)="onTextChange($event)" class="form-control">
+<p>{{serverName}}</p>
+<button class="btn btn-primary" [disabled]="!allowNewServer" (click)="onServerCreated()">Add Server</button>
+<p>{{serverCreatedStatus}}</p>
 <app-server></app-server>
 <app-server></app-server>
 
-<h3>Just testing if this works</h3>

@@ -49,3 +49,20 @@ _____________________________________________
 ng generate component servers 
 This will create a component called 'servers' inside a 'servers' folder in our 'app' folder
 
+15 Jun 2018
+______________
+
+DATA BINDING
+______________
+
+Data Output -- 
+string interpolation : {{<expression, which is mostly a variable from ts>}}
+Property Binding: [<some property>] = "<expression to set the value of the property>" e.g. < button [disabled]="!allowAction">Add Server</button>
+
+Data Input --
+Event Binding: (<event name>)="<typescript expression on event invocation>" e.g. <button (click)="doSomething()">Do It!</button>
+
+if you need to use the data which is passed automatically to the event, use the $event special variable, like <button (click) = "doSemething($event)>Do It!</button>
+
+
+
