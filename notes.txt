@@ -98,7 +98,24 @@ we can also use the javascript property for background color, in which case it w
 ______________________________
 ngClass
 ______________________________
-An attribute directive which can be used to dynamically assign a class to an element
+An attribute directive which can be used to dynamically assign a class to an element, if a condition is true
+It takes the form of [ngClass]="{<class_name>:<condition>}". e.g. [ngClass]="{online:serverStatus==='online'}"
+
+______________________________
+ngFor
+______________________________
+A built in directive which repeats an HTML element based on how many items are there in an array
+syntax: *ngFor="let <local_variable> of <back_end_array_name>".
+e.g.: <appServer *ngFor="let server of servers"></appServer>
+In the above example, the <appServer> tag is repeated once for every item in the "servers" array. The local variable which can be used in the ngFor is called "server".
+
+If we need the index of the current iteration, we can use a slightly modified syntax like below
+syntax:*ngFor="let <loop_variable> of <array>; let <local_index_variable> = index"
+e.g.: <p *ngFor = "let server of servers; let i = index"> {{i}} -- {{server}} </p>
+
+
+
+
 
 
 
