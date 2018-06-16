@@ -92,6 +92,9 @@ ___________________________
 This is an attribute directive, and is used like [ngStyle]="{backgroundColor:'red'}". The property backgroundColor of the element is set to red. We can set the property based on a property, by calling a method, instead of passing 'red' always. So, the code would look like
 [ngStyle]="{backgroundColor:getColor()}"
 
+we can also have a small code snippet instead of calling a funciton like
+[ngStyle] = "backgroundColor:i > 4?'red':'blue'"
+
 we can also use the javascript property for background color, in which case it would have to be in quotes. The above code would then be
 [ngStyle] = "{'background-color':getColor()}" 
 
