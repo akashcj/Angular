@@ -6,12 +6,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  displaySecret:boolean = false;
-  buttonClicks=[];
-
-  onButtonClick(){
-    this.displaySecret = !this.displaySecret;
-    this.buttonClicks.push("Button Clicked on " + new Date());
-  }
-
 }

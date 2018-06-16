@@ -49,6 +49,8 @@ _____________________________________________
 ng generate component servers 
 This will create a component called 'servers' inside a 'servers' folder in our 'app' folder
 
+This creates files for the .ts, .html, .cs and a .spec.ts file (the last file is a test script file). If we don't want the .spec.ts file use --spec false
+
 15 Jun 2018
 ______________
 
