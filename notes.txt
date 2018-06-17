@@ -118,6 +118,40 @@ If we need the index of the current iteration, we can use a slightly modified sy
 syntax:*ngFor="let <loop_variable> of <array>; let <local_index_variable> = index"
 e.g.: <p *ngFor = "let server of servers; let i = index"> {{i}} -- {{server}} </p>
 
+__________________________________
+Angular class constructor shortcut
+__________________________________
+
+We create an Angular class in using the syntax
+
+export class newClass{
+    public name:string;
+    public amount:number;
+
+    constructor(name, amount)
+    {
+        this.name = name;
+        this.amount = amount;
+    }
+}
+
+This can be shortened to 
+
+export class newClass{
+    constructor (public name, public amount){}
+}
+
+_______________________________________________
+Debugging in Angular
+_______________________________________________
+
+Step 1 would be to check the console to see if you can make sense of the error message. The line number given in the error however, doesn't map to the line causing the error in the actual code.
+
+Step 2 would be to check the code under the "Sources" tab of the developer tools in the chrome browser. We can open the "localhost:4200" tree, and select the main.bundle.js from there, but that will have the combined source code of our app, not the files in the actual source code. However, putting a breakpoint on any line will take us to the actual source code, where Angular uses source maps to do this, but it works in development only.
+
+Now, if you open the webpack source tree, and navigate to the src-->app folder, you will see all the files in your actual source code, and you can easily put a breakpoint in the correct file.
+
+Step 3 - We can also use the Augury tool, which allows you to look a the components, see their properties and dependencies. It also shows details on routing.
 
 
 
