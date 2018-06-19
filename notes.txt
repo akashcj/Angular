@@ -32,7 +32,8 @@ Second, declare the class is a component using an @Component decorator
 @Component(
 {
     selector:'app-server',
-    templateUrl: './server.component.html'
+    templateUrl: './server.component.html',
+    styleUrls:['./server.component.css','./server2.component.css']
 })
 This decorator should contain a selector, which is the html used to create this component in the markup -- in the above case <app-server></app-server>. However, these may also be of the form '[app-server]', or of the form '.app-server', in which case, they will have to be attributes of an element [e.g <div app-server></div>], or a css class of an element [e.g. <div class="app-server"></div>] to have the same effect. However, the element selector is the most used.
 
@@ -43,6 +44,9 @@ Fourth, add the component to the app.module.ts, in it @NgModule decorator, under
 Finally, add a tag with the selector defined in the component to a markup file, e.g. app.component.html, like <app-server></app-server>
 
 Now, invoking the webpage displayed, we see the markup defined in the templateUrl, in place of the selector tags.
+
+The css defined for a component markup is fetched from the files specified in the styleUrls array. These styles are only applicable to the current component, and not any other part of the application, not even child components of this component.
+This behavior can be changed by specifying a ViewEncapsulated object with value set to None in the @Component decorator, but that is mostly not the behavior we desire.
 
 COMPONENTS -- Creating using the @angular cli
 _____________________________________________
@@ -145,7 +149,7 @@ _______________________________________________
 Debugging in Angular
 _______________________________________________
 
-Step 1 would be to check the console to see if you can make sense of the error message. The line number given in the error however, doesn't map to the line causing the error in the actual code.
+Step 1 would be to check the browser debugger console to see if you can make sense of the error message. The line number given in the error however, doesn't map to the line causing the error in the actual code.
 
 Step 2 would be to check the code under the "Sources" tab of the developer tools in the chrome browser. We can open the "localhost:4200" tree, and select the main.bundle.js from there, but that will have the combined source code of our app, not the files in the actual source code. However, putting a breakpoint on any line will take us to the actual source code, where Angular uses source maps to do this, but it works in development only.
 
@@ -153,9 +157,118 @@ Now, if you open the webpack source tree, and navigate to the src-->app folder, 
 
 Step 3 - We can also use the Augury tool, which allows you to look a the components, see their properties and dependencies. It also shows details on routing.
 
+______________________________________________
+On the go type creation
+______________________________________________
 
+if we want to create a type on the fly, we need to use the below syntax
 
+myOnTheGoType:{name:string, type:string, amount:number};
 
+This would create a complex type for the myOnTheGoType variable, which would store individual name, type and amount values.
 
+Also, to assign a complex data without creating a type for it, we would do this
+
+quickVariable={name:"Yammer", type:"sportsman", amount:5}
+
+So, on the left of the '=' sign, the above sytax is a type definition, while on the right of the '=' sign, it is a value assignment.
+
+__________________________________________________
+Passing values from outside, to a component property
+__________________________________________________
+
+The property which needs to be assigned from the outside, should be decorated with an @Input() decorator.
+e.g.
+@Input() element;
+
+Now, we can have the markup of the parent compoent, assign values to this "element" property, using the normal property binding syntax, i.e. [element]="Hi There". The markup of the same component can access the values directly.
+
+The @Input() decorator can be configured to use a different value outside the component.
+e.g.
+@Input('srvElement') element;
+
+Now, the parent markup which assigns this value would need to use the syntax [srvElement]="Hi There". The previous [element]="Hi There" code will not work.
+
+____________________________________________________
+Raising events from a component, to its parent
+____________________________________________________ 
+We raise events from a component using the EventEmitter<> construct provided by Angular, also paring it with an @Output() decorator.
+e.g. if we need to raise an event like objectAdded from our component, and the data passed is an object of type {name:string, content:string}, we need to declare this like
+@Output() objectAdded = new EventEmitter<{name:string, content:string}>();
+
+now, whenever we want to emit the event, we would write
+
+objectAdded.emit({name:"Object Name", content: "Object Content"})
+
+Now, the parent component would need to catch the event using code like below
+e.g.
+<app-child (objectAdded)="onObjectAdded()"></app-child>
+
+Similar to the @Input decorator, we can pass a parameter to the @Output() decorator to change the name of the object passed from the outside
+e.g. if in the above example, we want the parent to use the 'objAdded' event instead of the 'objectAdded' event, we can define the @Output() decorator like
+@Output('objAdded') objectAdded = new EventEmitter<{.......
+_________________________________________________________
+
+Local Reference
+_______________________________________________________
+
+We can lable an HTML element in the markup using a local reference like below
+<input type="text" #inputServerName>
+
+The HTML element has now been identified as "inputServerName". This element can then be passed into Angular functions as a parameter, and properties can be extracted from these. 
+
+e.g. <app-server (click)="onButtonClick(inputServerName)"></app-server>
+These can even be used in the function like below
+onButtonClick(inputFromComponent: HTMLInputElement)
+{
+    this.local_value = inputServerName.value;
+}
+
+The local reference is not visible in the .ts file
+_____________________________________
+@ViewChild
+_____________________________________
+
+Just like we can get a markup element using the Local Reference, we can also bind the Local Reference to a Component property using the @ViewChild() decorator.
+e.g. 
+Add a Local Reference like this
+<input type="text" #inputServerName>
+
+And in the .ts file, we can declare a property like this
+@ViewChild('inputServerName') inputName:ElementRef;
+
+Now, anywhere in the code, we can access values of the input element on which we have a local reference lik
+local_value = this.inputName.nativeElement.value;
+
+We can also use this to change the value of the element in the markup, i.e. modify the DOM, 
+e.g. this.inputName.nativeElement.value = "NewName"
+However, we should not do so as angular has a "correct" way of doing this.
+
+___________________________________
+ng-content
+___________________________________
+This is a directive which allows the parent element to pass across HTML content to the child element.
+
+Normally, anything between a child element's selectors is lost on rendering
+e.g.
+<app-child>My Child </app-child>
+
+will render without the "My Child".
+
+However, the child element can choose to output the HTML entered between it's selectors by the parent, by using the code
+<ng-content></ng-content>. 
+This will simply project the HTML passed from the parent to where the child's markup contains the above code.
+
+Also, the child compoent can access any HTML element in the .ts file, if that is marked as a Local Reference with a #<identifier>
+e.g.
+In the parent component markup, in the content which will be projected to the child, we can set
+<p #projectedParagraph>
+...content which is projected
+</p>
+
+and in the child ts, we can access the HTML using
+@ContentChild('projectedParagraph') contentFromParent:ElementRef
+
+and then contentFromParent.nativeElement.<value to access>
 
 
