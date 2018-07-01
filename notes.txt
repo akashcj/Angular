@@ -2,7 +2,7 @@
 ------------
 ngModel is part of the FormsModule which can be imported from '@angular/forms';
 
-angular.json needs to have the styles section updated with the bootstrap styling
+angular.json needs to have the styles section updated with the bootstrap styling, to be able to use bootstrap.
 
 11 Jun 2018
 -------------
@@ -85,11 +85,12 @@ e.g. <p *ngIf="isValidData">{{data}}</p>
 
 if we have an else condition, we can define an ng-template area with a marker and link the else condition of the ngIf to that marker
 e.g. 
-<p *ngIf="serverCreated;else noServer> Server {{ServerName}} has been created </p>
+<p *ngIf="serverCreated;else noServer"> Server {{ServerName}} has been created </p>
 <ng-template #noServer>
     <p>No Server has been created yet</p>
 </ng-template>
 
+More than one structural directives cannot be used on a single element
 __________________________
 
 ngStyle Directive
@@ -113,7 +114,7 @@ It takes the form of [ngClass]="{<class_name>:<condition>}". e.g. [ngClass]="{on
 ______________________________
 ngFor
 ______________________________
-A built in directive which repeats an HTML element based on how many items are there in an array
+A built in structural directive which repeats an HTML element based on how many items are there in an array
 syntax: *ngFor="let <local_variable> of <back_end_array_name>".
 e.g.: <appServer *ngFor="let server of servers"></appServer>
 In the above example, the <appServer> tag is repeated once for every item in the "servers" array. The local variable which can be used in the ngFor is called "server".
@@ -121,6 +122,20 @@ In the above example, the <appServer> tag is repeated once for every item in the
 If we need the index of the current iteration, we can use a slightly modified syntax like below
 syntax:*ngFor="let <loop_variable> of <array>; let <local_index_variable> = index"
 e.g.: <p *ngFor = "let server of servers; let i = index"> {{i}} -- {{server}} </p>
+
+More than one structural directives cannot be used on a single element
+
+_____________________________________
+ngSwitch
+_____________________________________
+A built in directive used to work as a switch case. It is used as below.
+If we can to show different markups based on the value of a class variable backendVar the code would be
+
+<div [ngSwitch]="backendVar">
+	<p *ngSwitchCase="5">Value of backendVar is 5 </p>
+	<p *ngSwitchCase="15">Value of backendVar is 15 </p>
+	<p *ngSwitchDefault>Value is default </p>
+</div>
 
 __________________________________
 Angular class constructor shortcut
@@ -271,4 +286,126 @@ and in the child ts, we can access the HTML using
 
 and then contentFromParent.nativeElement.<value to access>
 
+____________________________________
+Custom Attribute Directives
+____________________________________
+Custom Directives are just typescript  classes which achieve functionality on an HTML element on which it is applied.
 
+By convention, we create a file of the form <some_name>.directive.ts to host the directivecode
+e.g.
+basic-highlight.directive.ts
+
+The filename, by convention should be <Directive Name>Directive
+e.g.
+export class BasicHighlightDirective{
+}
+
+On top of a directive class, we should declare an @Directive() decorator, specifying the 'selector' used for the directive. This decorator should be imported from '@angular/cli'
+
+e.g
+@Directive({selector:'[appBasicHighlightDirective]'})
+export class BasicHighlightDirective{
+	
+}
+Note: Unlike a Component, a Directive doesn't take a template attribute.
+
+The element on which the directive is placed can be accessed in the constructor like
+constructor(private elementRef:ElementRef){}
+
+The onInit() function would be a very good place to manipulate the attributes of the element
+onInit()
+{
+	this.elementRef.nativeElement.style.backgroundColor='blue';
+}
+
+Finally, the directive's class needs to be included in app.module.ts inside the @NgModule declarations section, and it can be used on elements like
+
+<p appBasicHighlightDirective>Style Me</p>
+
+In the above case, the "Style Me" string will have a background color of blue.
+
+However, we should ideally not be using the elementRef object to directly style elements, as Angular can work in environments which don't have a DOM. So, we should use a class called Renderer2, to manipulate the element. In this case, our constructor and ngOnInit functions would look like below
+e.g.
+constructor(private elRef:ElementRef, private renderer:Renderer2){}
+
+ngOnInit()
+{
+	this.renderer.setStyle(this.elRef,'background-color','blue');
+	this.renderer.setStyle(this.elRef,'color','white');
+}
+
+We can also react to events on elements on which the directives can be applied, using the @HostListener directive in the form
+@HostListener('<event to react to>') <function_name>(){
+...code to execute on the occurence of the event on the element
+}
+
+e.g., if we want to change the color of an element on mouse enter, we can write the following code
+@HostListener('mouseenter') myMouseEnterFunction(eventData:Event)
+{
+	this.renderer.setStyle(this.elRef, 'color', 'red');
+}
+
+Apart from using the renderer, there is also one more way in which we can change element properties, and this is using the @HostBinding() directive of the form
+@HostBinding('<property to change>') <mapped_variable>:<variable_type>;
+
+e.g. if we want to access the background color of a variable, then we can use the following code
+@HostBinding('backgroundColor') backgroundColor:string;
+and in a function where we need to change the background color, we can set
+backgroundColor = 'blue';
+
+note the camel case, which is the way we need to pass properties into the @HostBinding() directive, without the '-'.
+
+________________________________
+Passing parameters to Directives
+________________________________
+
+In order to pass parameters to Directives, we can use the @Input() decorator, just like in Components. e.g., if we have an attribute directive called "[SampleDirective]" which requires the value of a "directive_var" to be set, we need to define a variable in the directive class like,
+
+@Input() directive_var:string = 'some_default_value';
+
+The 'some_default_value' is the default value, if the user doesn't set the value of "directive_var" in the markup
+Now, in the html which uses this directive, we can set the value of the "directive_var" like below
+
+<p SampleDirective [directive_var]="'some other value'">Blah! Blah! Blah!</p>
+
+Angular figures out ("somehow") that the [directive_var] is not a property of the <p> html element, and that it actually belongs to the "SampleDirective" and then processes it accordingly.
+
+If we use the directive selector as the name of an internal directive variable, then, we can use a shorthand to use the directive
+e.g.
+In the directive class, if we define the input variable like
+@Input('SampleDirective') directive_var:string = 'some_default_value';
+
+Then in the markup, we can use the shorthand like
+<p [SampleDirective] = "'some other value'">Blah! Blah! Blah!</p>
+
+_________________________________
+Custom Structural Directives
+_________________________________
+
+When we create structural directives, the selector is the same as an attribute directive. So if we have a structural directive which we want to refer to as appStructuralDirective, we need to define the selector as
+@Directive({selector:'[appStructuralDirective]'})
+
+However, we need to define an Input property of the directive class with the same name as the selector. We also need to use only the set property of the @Input() decorator like
+@Input('appStructuralDirective') set mainDirectiveVariable(value:boolean){
+	
+}
+
+If we are changing the DOM, we need 2 variables -- 1, the template which was passed, and second, the view container onto which to display the html which is emitted by the directive.
+
+so, we need to pass the variables into the constructor as
+constructor(private templateRef:TemplateRef<any>, private viewContainerRef:ViewContainerRef){
+}
+
+we can now use these variables in the set method defined earlier like
+@Input('appStructuralDirective') set mainDirectiveVariable(value:string){
+	if (value) {
+		viewContainerRef.createEmbeddedView(templateRef);
+	}
+	else
+	{
+		viewContainerRef.clear();
+	}
+}
+
+The above is the code for a directive like ngIf
+_______________________________________________
