@@ -11,10 +11,8 @@ export class AppComponent {
   onHeaderChange(showRecipe:boolean)
   {
     this.showRecipe = showRecipe;
-    console.log("Show Shopping List:" + showRecipe);
   }
 
   constructor(){
-    console.log("In Constructor, showShoppingList is:"+ this.showRecipe);
   }
 }
