@@ -409,3 +409,42 @@ we can now use these variables in the set method defined earlier like
 
 The above is the code for a directive like ngIf
 _______________________________________________
+
+Services
+_______________________________________________
+
+Services are classes in Angular which provide functionality, which can be centralized to the whole Angular project. The difference between a normal class and an Angular Service is that a service can be injected into components by Angular's infrastructure.
+
+Given below are the steps to create a service.
+
+Step 1: Create a class which provides the service, e.g.
+
+export class DummyService(){
+	do_something_valuable(input:string){
+		....
+	}
+}
+
+Now, in the component where we want to utilize the service, we add the service to a providers array in the @Component() decorator, e.g.
+
+@Component({
+	selector:'app-my-component',
+	styleUris:['./styles.css],
+	providers:[DummyService]
+})
+
+and in the class constructor we include a variable of the "Service" type, as a parameter like
+constructor(private dummyService:DummyService){}
+
+Finally, in the component method where we plan to use the service, we can just invoke it like a local class variable which has been initialized.
+e.g.
+
+this.dummyService.do_something_valuable("Hello");
+
+______________________________________
+Service Injection Hierarchy
+_____________________________________
+If a service is injected into appModule, the same instance of the Service it is available throughout the application.
+If a service is injected into the App Component, the same instance of the Service is available for all the Components of the application.
+If a service is injected into the Component, the same instance of the service is available for the Component and all the child components.
+If a service is injected at any level, it overrides all service instances above it.
