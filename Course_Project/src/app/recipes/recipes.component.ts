@@ -13,16 +13,12 @@ export class RecipesComponent implements OnInit {
   constructor(private recipeService:RecipeService) { }
 
   ngOnInit() {
-    //selecting the first recipe by default
-    this.selectedRecipe = this.recipeService.getRecipes()[0];
-    console.log("All Recipes");
-    console.log("Selected Recipe Initially");
-    console.log(this.selectedRecipe);
+    this.recipeService.recipeSelected.subscribe(
+      (recipe)=>
+      {
+        this.selectedRecipe = recipe;
+      });
   }
 
-  onRecipeSelected(recipe:Recipe){
-    console.log("Got Recipe Selected in the recipe component");
-    this.selectedRecipe = recipe;
-  }
 
 }
