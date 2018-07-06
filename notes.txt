@@ -448,3 +448,32 @@ If a service is injected into appModule, the same instance of the Service it is 
 If a service is injected into the App Component, the same instance of the Service is available for all the Components of the application.
 If a service is injected into the Component, the same instance of the service is available for the Component and all the child components.
 If a service is injected at any level, it overrides all service instances above it.
+
+____________________________
+@Injectable()
+_____________________________
+In order to inject a service into another service, we need to 
+declare the service which is used inside the other service in the app.module.ts file, in the @NgModel() directive, inside its providers array.
+
+Then, in the service we want to use the directive, use the @Injectable() directive above the class declaration.
+
+Finally, we also need to "inject" the service into constructor of the class. 
+
+_______________________________
+Events inside services
+_______________________________
+
+We can have events inside a service, emitted and subscribed to by any component that uses the service.
+
+e.g. if we have an AccountsService where we plan to emit an event of type string, we would declare it in the class like
+StatusUpdate = new EventEmitter<string>();
+
+Now, in any component where we have injected the service, we can emit or subscribe to the event.
+
+The event can be emitted in a component subscribing to the event like
+
+this.accountService.StatusUpdate.emit("Dummy Status Update");
+
+And in another Component where we have injected the service, we can subscribe to it like
+
+this.accountsService.StatusUpdate.subscribe((status:string)=>{do_something....});

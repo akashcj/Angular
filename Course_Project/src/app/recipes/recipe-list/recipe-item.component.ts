@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Recipe } from '../../recipe.model';
+import { Recipe } from '../recipe.model';
 
 @Component({
   selector: 'app-recipe-item',
@@ -17,6 +17,7 @@ export class RecipeItemComponent implements OnInit {
 
   onItemClicked()
   {
+    console.log("Recipe Item Clicked");
     this.recipeSelected.emit(this.recipe);
   }
 
