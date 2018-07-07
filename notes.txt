@@ -409,3 +409,4 @@ we can now use these variables in the set method defined earlier like
 
 The above is the code for a directive like ngIf
 _______________________________________________
+
