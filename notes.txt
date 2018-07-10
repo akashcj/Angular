@@ -477,3 +477,95 @@ this.accountService.StatusUpdate.emit("Dummy Status Update");
 And in another Component where we have injected the service, we can subscribe to it like
 
 this.accountsService.StatusUpdate.subscribe((status:string)=>{do_something....});
+
+________________________________________
+Routing
+________________________________________
+In order to implement routing in Angular, wherein you can give the impression of different pages loading up when the URL changes, you need to do the following.
+
+1. Set up a routing table of the form inside the app.modules.ts file
+
+const appRoutes:Routes=[ 
+			{path:'', component:HomeComponent},
+			{path:'users',component:UsersComponent}
+		];
+
+Each of the route element contains a path string, which is the sub-url to navigate to to display the corresponding component.
+
+Note: Both Routes and the RouterModule need to be imported from @angular/router.
+Note: The path component should be listed without the separating '/' character
+
+2. Register the appRoutes array inside the "imports" section of the @NgModule() directive like below. The "RouterModule.forRoot(appRoutes)" is the line added to the imports array to register the routes
+
+imports:[
+	BrowserModule,
+	FormsModule,
+	HttpModule,
+	RouterModule.forRoot(appRoutes)	
+]
+
+3. Set up an area where to display the component when a route's path conditions are satisfied, using the <router-outlet> directive like
+
+<p>
+	<router-outlet></router-outlet>
+</p>
+______________________________________________________________
+routerLink
+______________________________________________________________
+
+After setting up routes, while we can manually navigate to a page using href="". However, it causes the entire page to refresh, which may cause us to lose state. To prevent this, we use routerLink
+
+e.g <a routerLink="/">Home</a>
+would navigate to the home page and
+<a routerLink="/servers">Servers</a>
+would navigate to the "/servers" path which is set up in the routes in app.module.ts
+
+We can also bind to routerLink using property binding, and pass an arry with multiple values to it like
+
+<a [routerLink]="['users','param1', 'param2']"
+
+this will allow us to navigate to a link like /users/param1/param2
+
+Note: if we don't use the leading '/' character, the path is considered a relative path. e.g if we say
+<a routerLink="servers">Servers</a>
+it would go to <current path>/Servers
+We can also use "./" in front of the path for a relative path and "../" in front of the path to go back a level, just like folder navigation in windows/linux. However, it doesn't go back 1 segment between 2 '/'s exactly -- it goes back to before the currently loaded segment, which may be contributing more than one '/' to the path.
+________________________________________________________________________
+routerLinkActive
+______________________________________________________________
+
+This is an Angular directive which allows us to attach a CSS class to an element if the link on which the page sits matches the path specified by the routerLink directive on the same element. This helps in giving a visual indication to the user that the current element is the one which is active.
+
+e.g.
+<li role="presentation" routerLinkActive = "active">
+	<a routerLink="/">Home</a>
+</li>
+This attaches the "active" class to the element if the current path matches the routerLink path specified in the component, or the child component
+
+However, this class is attached any time the path matches, and in case of root paths, will always be active. In this case, we want the class to be attached only if the path matches exactly. So, we make use of another directive called the routerLinkActiveOptions like
+<li role="presentatation" routerLinkActive="active" [routerLinkActiveOptions]='{exact: true}'>
+	<a routerLink="/">Home</a>
+</li>
+Note: We need to use property binding syntax for this, as we pass an object, whose "exact" property is set to "true".
+______________________________________________
+programmatically navigating to a router link
+______________________________________________
+
+If we need to programmatically navigate to a router link, we first need to inject the "Router" service in the constructor of the class we plan to use programmatical routing, like
+
+constructor (private router:Router){}
+
+where "Router" needs to be imported from '@angular/router'.
+
+Now, whenever we need to import the router link, we call 
+
+this.router.navigate(['users']);
+
+The array passed to the above function is the same as the array passed to the routerLink directive
+However, the path is treated as an absolute path if no additional parameters are sent to the function. However, can set the relative path while navigating programmatically by passing it into the second parameter of the navigate function like
+this.router.navigate(['users'],{relativeTo:this.activatedRoute});
+
+where activatedRoute is of type ActivatedRoute, injected into the constructor like
+constructor(private activatedRoute:ActivatedRoute, private router:Router),
+and both ActivatedRoute and Router are imported from '@angular/router'.
+
