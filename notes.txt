@@ -567,5 +567,34 @@ this.router.navigate(['users'],{relativeTo:this.activatedRoute});
 
 where activatedRoute is of type ActivatedRoute, injected into the constructor like
 constructor(private activatedRoute:ActivatedRoute, private router:Router),
-and both ActivatedRoute and Router are imported from '@angular/router'.
+Note: Both ActivatedRoute and Router are imported from '@angular/router'.
 
+____________________________________________
+Passing parameters to routes
+____________________________________________
+
+In order to pass a dynamic route parameter, the route needs to be added like below into the app.module.ts file
+appRoutes:Routes[]=[{path:'/users/:id/:name', component:UserComponent}];
+
+Now, we can navigate to the url using http://root_path/users/1/Somebody
+
+And in the component which handles the route, we extract the id and name as below
+
+this.local_id = this.activatedRoute.snapshot.params['id']; and
+this.local_name = this.activatedRoute.snapshot.params['name'];
+
+where activatedRoute is injected into the constructor, and is of the form
+
+constructor(private activatedRoute:ActivatedRoute){}
+
+and ActivatedRoute is imported from '@angular/Router'
+
+However, if the parameters on the route link change from inside the page, Angular doesn't refresh the element values automatically. So, in order to track the changes, we need to subscribe, which we do as below
+
+activatedRoute.params.subscribe(
+(params:Params)=>{
+	this.local_id=params['id'];
+	this.local_name=params['name'];
+});
+
+Note: The subscription is automatically destroyed when we navigate away from the component
