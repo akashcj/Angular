@@ -598,3 +598,49 @@ activatedRoute.params.subscribe(
 });
 
 Note: The subscription is automatically destroyed when we navigate away from the component
+
+______________________________________________
+Passing Query parameters and fragments to routes
+______________________________________________
+
+Query parameters are arguments passed to a link like ?edit=true&fire=false
+
+In order to pass query parameters, in the markup, we use properties of the routerLink directive
+e.g.
+To navigate to the root/servers/5/edit/?allowEdit=true&fire=false, we would have a markup like
+
+<a [routerLink]="['servers',server.id,edit]" [queryParams]="{edit:'true', fire:'false'}">Click Here </a>
+
+The parameters passed to queryParams are of the form of key value pairs
+
+If we need to add a fragment #loading also to the url, we would be using the fragment property of the routerLink directive like
+<a [routerLink]="['servers',server.id,'edit']" [queryParams]='[edit:"true", fire:"false"]' fragment="loading">
+
+If we need to add query params and fragments programatically, we would do that using the navigate property of the router service, which we inject into the constructor, like
+
+this.router.navigate(['servers',this.selectedServer.id, 'edit'], {queryParams:{edit:'true', fire:'false'}, fragment:'loading'});
+
+That is, we use the second parameters, which is the navigationExtras object, which itself is composed of objects like queryParams and fragment. queryParam is a key value pair.
+
+__________________________________________________________
+Retreiving Query Params and fragments from the URL
+__________________________________________________________
+
+This is similar to retreiving params using the activatedRoute injected service.
+To retreive query params, we would do the following
+let allowEdit = this.activatedRoute.snapshot.queryParams['edit'];
+let fire = this.activatedRoute.snapshot.queryParams['fire'];
+
+And similarly, we can retreive the fragment using
+
+let urlFragment = this.activatedRoute.snapshot.fragment;
+
+Again, similar to params, we can subscribe to events for queryParams and fragment, to react to changes
+
+e.g.
+
+this.activatedRoute.queryParams.subscribe(<your code here>);
+this.activatedRoute.fragement.subscribe(<your code here>);
+
+_______________________________________________________________
+
