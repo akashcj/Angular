@@ -20,7 +20,16 @@ export class EditServerComponent implements OnInit {
     // console.log(this.activatedRoute.snapshot.fragment);
     // this.activatedRoute.queryParams.subscribe();
     // this.activatedRoute.fragment.subscribe();
-    this.server = this.serversService.getServer(1);
+    if (this.activatedRoute.snapshot.params['id'])
+    {
+      let idValue = parseInt(this.activatedRoute.snapshot.params['id']);
+      this.server = this.serversService.getServer(idValue);
+    }
+    else    
+    {
+      this.server = this.serversService.getServer(1);
+    }
+    
     this.serverName = this.server.name;
     this.serverStatus = this.server.status;
   }

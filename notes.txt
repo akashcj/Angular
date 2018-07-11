@@ -643,4 +643,35 @@ this.activatedRoute.queryParams.subscribe(<your code here>);
 this.activatedRoute.fragement.subscribe(<your code here>);
 
 _______________________________________________________________
+Nested Routes
+_______________________________________________________________
 
+When we want to have one component inside another, but also have the nested component based on the url route, we use nested routes
+
+e.g.
+
+Main Component Page
+Main Component item|
+Main Component item|Another component Page
+Main Component item|
+
+To do this, in the appRoutes inside the app.module.ts, we update the route to the main component to include a "children" property, which is an array.
+
+e.g.
+
+appRoutes:Routes[]=[{path:"servers", component:ServersComponent, children:
+	[path:":id", component:ServerComponent],
+	[path:":id/edit", component:ServerEditComponent]
+}];
+
+Now, the route till <root_path>/servers will load the ServersComponent, and the <root_path>/servers/:id or the the <root_path>/servers/:id/edit routes would load the ServerComponent or the ServerEditComponent inside the <router-outlet></router-outlet> placeholder in the ServersComponent markup.
+
+e.g.
+In the Servers.Component.html
+<p> All Servers<p>
+<div *ngFor="let server of servers">
+	{{server.id}}:{{server.name}}
+</div>
+<router-outlet></router-outlet>
+
+Note: the ServersComponent itself would be loaded in the <router-outlet></router-outlet> placeholder of its parent component, which could be the AppComponent itself.
