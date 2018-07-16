@@ -675,3 +675,33 @@ In the Servers.Component.html
 <router-outlet></router-outlet>
 
 Note: the ServersComponent itself would be loaded in the <router-outlet></router-outlet> placeholder of its parent component, which could be the AppComponent itself.
+___________________________________
+Preserving Query Params on routing
+___________________________________
+
+On navigating to a new route, older query parameters are dropped. To prevent this, we have options to merge the older query parameters with newer ones we just add, or to preserve the older ones which were there. The options are available under the queryHandling property of the navigationExtras object passed to the navigate method of the Router service like
+
+this.router.navigate(['edit'], {relativeTo:this.activatedRoute, queryParamsHandling:'preserve'});
+
+If we want to merge the passed query params with our query params, we would use 'merge' instead of 'preserve'
+
+______________________________________________
+redirecting routes and catching all routes
+______________________________________________
+
+If our appRoutes:Routes[] in our app.module.ts has a route with the path '**', it will catch all routes
+e.g.
+
+{path:'**', component: PathNotFoundComponent}
+
+However, this should be the last entry of the appRoutes as otherwise, all routes would map to this route
+
+A better way would be to redirect all unknown pages to a "not-found" route which displays the PathNotFound component. We do this like below
+e.g.
+
+appRoutes:Routes[]=[...
+{path:'not-found', component:PathNotFoundComponent},
+{path:'**', redirectTo:'not-found'}]
+
+In this case, any unknown route would get redirected to the 'not-found' path, and then the PathNotFoundComponent would be displayed.
+
