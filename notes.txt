@@ -705,3 +705,96 @@ appRoutes:Routes[]=[...
 
 In this case, any unknown route would get redirected to the 'not-found' path, and then the PathNotFoundComponent would be displayed.
 
+_______________________________________________________
+Route Guards
+_______________________________________________________
+We can guard a route, that is control a route from being navigated to, by creating a class which implements the CanActivate Interface. Only if the CanActivate method of the class returns true, will the routing go ahead.
+
+So, if we want to restrict the <root>/servers route, include a canActivate element in the path, with the class which guards the route
+
+e.g.
+in the appRoutes:Routes[
+...
+{path:"servers", canActivate: [ServerGuard], component: ServersComponent},
+...
+};
+
+The ServerGuard class would be a service, implemented like
+
+export class ServerGuard implements CanActivate{
+	CanActivate(activatedRouteSnapshot:ActivatedRouteSnapshot, routerStateSnapshot:RouterStateSnapshot):
+	Observable<boolean>|Promise<boolean>|boolean
+	{
+		if (this.isAuthenticated)
+		{
+			return true;
+		}
+		else
+		{
+			//we can navigate to some other place if required like router.navigate(['/']);
+			return false;
+		}
+	}
+}
+
+Note: Objects of type ActivatedRouteSnapshot and RouterStateSnapshot are provided automatically by Angular, to the CanActivate method.
+
+Note: The CanActivate element in the route guards the route, and the child routes of the route, if any.
+
+Note: We can prevent access to all child routes of a route, by creating a class implementing the CanActivateChild method, similar to the CanActivate method. In this case, in the parent route, include a "CanActivateChild:[<guard-class-name>]". The same class can implement both the CanActivate and the CanActivateChild interface.
+
+__________________________________
+Route Leaving Guards
+__________________________________
+Similar to route guards, which prevent navigating to a route, we can implmenent guards which prevent a user from leaving a route. This is mostly used when the user forgets to save something before navigating.
+
+However, creating such a guard is more involved. We need a class which implements a CanDeactivate interface, which itself is a generic interface. This interface, takes as a parameter, another interface, which declares the function which we would be using as the "route leaving guard". This function, is implemented in the component displayed by the route, where we want to keep the user at.
+
+e.g.
+
+First implement the interface declaring the route Deactivate guard
+
+export interface IRouteDeactivate{
+	canLeaveRoute(): Observable(boolean)|Promise(boolean)|boolean;
+}
+
+Then implement a service which implements the CanDeactivate generic interface with IRouteDeactivate as the parameter
+
+export class RouteDeactivate implements CanDeactivate<IRouteDeactivate>{
+	canDeactivate(component:IRouteDeactivate,
+			activatedRouteSnapshot:ActivatedRouteSnapshot,
+			currentRoute:RouteStateSnapshot,
+			nextRoute:RouteStateSnapshot){
+		component.canLeaveRoute();		
+	}
+}
+
+In the component class which the route would be using, implement the IRouteDeactivate interface which was created earlier.
+
+export class ServersComponent implements OnInit, IRouteDeactivate{
+
+...
+	canLeaveRoute()
+	{
+		if (<condition>)
+		{
+			confirm("Lose changes?");
+		}
+		else
+		{
+			return true;
+		}
+	}
+...
+}
+
+declare the RouteDeactivate component as a service by including it in the providers[] array inside @NgModule() in app.module.ts
+
+Finally, to the component route in appRoutes which needs to be guarded from leaving, add a CanDeactivate:[] element with the RouteDeactivate Class
+
+appRoutes:Routes[]=[
+...
+	{path:"servers", component: ServersComponent, canDeactivate:[RouteDeactivate]}
+...
+];
+__________________________________________________

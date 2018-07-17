@@ -1,5 +1,15 @@
 <h4>Welcome to Server Manager 4.0</h4>
 <p>Manage your Servers and Users.</p>
 <button class="btn btn-primary" (click)="onLoadServer(5)">Load Server 5</button>
+<button class="btn btn-default" (click)="onLogin()">Login</button>
+<button class="btn btn-danger" (click)="onLogout()">Logout</button>
+
+<div *ngIf="isLoggedIn">
+    <h3>You are logged In</h3>
+</div> 
+    
+<div *ngIf="!isLoggedIn">
+    <h3>You are not logged In</h3>
+</div>
 
 
