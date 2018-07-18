@@ -1,4 +1,2 @@
 <app-header (featureSelected)="onHeaderChange($event)"></app-header>
-
-<app-recipes *ngIf="showRecipe"></app-recipes>
-<app-shopping-list *ngIf = "!showRecipe"></app-shopping-list>
+<router-outlet></router-outlet>

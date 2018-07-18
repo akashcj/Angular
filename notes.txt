@@ -705,6 +705,7 @@ appRoutes:Routes[]=[...
 
 In this case, any unknown route would get redirected to the 'not-found' path, and then the PathNotFoundComponent would be displayed.
 
+Note: In case we are redirecting an empty path, i. e. path:'' to another route, we need to use the pathMatch:'full', so that the path doesn't become recursive, as every route matches the '' route. The default value of pathMatch:'prefix'
 _______________________________________________________
 Route Guards
 _______________________________________________________
