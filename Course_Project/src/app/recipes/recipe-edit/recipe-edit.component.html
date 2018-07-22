@@ -1,0 +1,8 @@
+<div *ngIf="!editMode">
+  <p>New Component Form Coming Soon</p>
+</div>
+<div *ngIf="editMode">
+  <p>Editing Recipe with ID:{{id}}</p>
+  <p>Recipe Name:{{recipe.name}}</p>
+  <p>Recipe Description: {{recipe.description}}</p>
+</div>

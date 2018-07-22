@@ -799,3 +799,125 @@ appRoutes:Routes[]=[
 ...
 ];
 __________________________________________________
+Observables in Angular 6
+__________________________________________________
+Since Angular 6, the way to use observables has changed. The old way to use observables can be preserved using the rxjp-compat module from npm, using 
+npm install --save rxjs-compat
+
+This may be already installed for you though -- check in your package.json file
+
+____________________________________
+Using the interval method to create an Observable
+__________________________________________________
+
+The Rxjs package has a number of methods to create observables for us. One of these methods is the interval method.
+
+First, we need to 
+import { Observables } from 'rxjs';
+
+then, to create an observable using the interval method, we
+
+//This interval emits a value every 1s
+const myIntervalObservable = interval(1000);
+
+the subscribe method to an interval takes 3 parameters, all of which are functions.
+The first parameter is the callback function which is called when the event subscribed to occurs, the second function is the callback invoked when the observable sends out an error event, and the third is the function to call when the "Complete" event for the observable occurs.
+
+In the case of the interval Observable, it doesn't error out (normally), and it never completes, so we don't need to subscribe to these events.
+
+So, here is the subscription code
+
+e.g
+myIntervalObservable.subscribe( (value:number) => {console.log("Got Value:" + value;});
+
+Note: The observable continues to be subscribed to, until we unscribe. Most of the Angular Observables are auto-unsubscribed to, when the component goes out of scope, but for custom Observables like the above, we need to specifically unscribe.
+
+e.g
+
+const myObservableSubscription:Subscription;
+
+myNumbersObservable = myObservableSubscription.interval(1000);
+myObservableSubscription = myNumbersObservable.subscribe( () => {//do something} );
+
+and finally, maybe in the OnDestroy method, call
+myObservableSubscription.unscribe();
+
+____________________________________
+Creating an observable from scratch
+____________________________________
+
+The code for this would be something like
+
+e.g.
+const myObservable = Observable.create((observer:Observer<type>)=>{The loop which the Observable keeps running});
+
+In the loop is what the observable runs, in order to retun and event of the type subscribed to, we need to write
+e.g.
+observer.next(<type>);
+
+and in order to return an error, we write
+e.g.
+observer.error(<type>);
+
+and finally, in order to complete the Observable, we would write
+e.g.
+observer.complete();
+The complete event doesn't take a parameter.
+
+const myObservableSubscription:Subscription;
+
+
+And we would subscribe to it like
+
+myObservableSubscription = myObservable.subscribe(
+(value:<type>) => {/*What to do when the subscribed event occurs*/},
+(value:<type>) => {/*What to do when an error event occurs*/},
+() => {/*What to do when the subscribtion completes}
+);
+
+When we are done with using the observable, we should unscribe, otherwise the subscription continues forever, possibly causing memory leaks
+
+myObservableSubscription.unsubscribe();
+Note: If once the Observable sends out a complete event, any other normal event sent by the Obserable doesn't register.
+
+______________
+Rxjs Subject
+______________
+
+A class provided by Rxjs which allows the user to set up both the observable part, and the subscription part from one interface. It can be used to communicate between components, instead of using the eventEmitter.
+
+setting up a subject
+e.g.
+mySubject:Subject = new Subject();
+
+and in order to send an event
+e.g.
+mySubject.next(id: number);
+
+and for someone to subscribe to this
+e.g.
+mySubject.subscribe((id:number) => {});
+
+If the subject is exposed as a service, we can use it to synchronize components.
+
+_______________
+Rxjs Operators
+_______________
+
+Operators convert the value returned from one Observable to another. To the subscriber, it seems like the original Observable is returning the new values.
+
+With Angular 6, the way to use operators has changed. Earlier, we could use the operators in a chain, like 
+e.g
+myObserver = Observable.create((observer: Observer<number>) => { /*something to do*/}).operator1((data:number) => {}).operator2((data: number) => {});
+
+The final output for the subscriber would be what is returned by operator 2.
+
+Now, with Angular 6, instead of chaining, we have a pipe function, which takes infinite arguments, and each argument is an operator
+
+e.g.
+
+myObserver = Observer.create( (myObserver: Observer<data: number>) => {/*Do something*/} ).pipe(
+	map( (data:number) => {return data * 2}), switch ( (data: number) => {/*do something*/})
+);
+
+The final output for the subscriber would be what is returned by the switch operator.
