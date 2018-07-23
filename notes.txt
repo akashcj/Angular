@@ -239,7 +239,7 @@ onButtonClick(inputFromComponent: HTMLInputElement)
     this.local_value = inputServerName.value;
 }
 
-The local reference is not visible in the .ts file
+The local reference is not visible in the .ts file, unless we use @ViewChild
 _____________________________________
 @ViewChild
 _____________________________________
@@ -921,3 +921,64 @@ myObserver = Observer.create( (myObserver: Observer<data: number>) => {/*Do some
 );
 
 The final output for the subscriber would be what is returned by the switch operator.
+
+__________________________
+Template forms in Angular
+__________________________
+
+There are 2 approaches to creating forms in Angular. Template driven and reactive.
+
+In the Template driven approach, the form template is created in HTML and we use some markers to indicate to Angular, the various input fields in the form.
+
+We do this by adding "ngModel" to an input element, and also giving a name to the element.
+e.g.
+<label for="name_element">Your Name:</label>
+<input type="text" id="name_element" ngModel name="input_name">
+
+In the above code, we are setting up the input element to be called "input_name" in Angular.
+
+In order to submit the form, we need to have a button with type = "submit". However, for form submit to be handled by Angular, our form should not have an "action" or a "method" attribute. Instead, the form element should handle the ngSubmit event, and the handler can use a templateRef of the form passed as input. There is a change to the normal templateRef elements, wherein the templateRef is set equal to "ngForm", in order to allow angular to acces the form data.
+
+e.g.
+<form (ngSubmit)="onSubmit(f)" #f="ngForm">
+.....
+</form>
+
+We can also use the ViewChild() method to gain access to the form.
+e.g.
+
+@ViewChild('f') inputForm:NgForm;
+
+We can then use individual properties of the inputForm class variable.
+____________________________________
+Validating input in Template forms
+____________________________________
+
+In order to impose validation, we can use the HTML keywords like "required" to enforce that an input has value, and "email" to enforce email like format. 
+Angular checks these on input elements and adds classes like ng-valid and ng-invalid, which can be used to style the controls to show error.
+
+In the .css file, we can add styling targeting all input elements, which have been touched like below
+e.g.
+input.ng-invalid.ng-touched{
+	border: 1px solid red;
+}
+
+We can also use a reference to an element using templateRef to show helpful error hints. In the example below, #email is the reference which can be used by the *ngIf condition
+e.g.
+
+<label for="email">Email:</label>
+<input id="email" ngModel name="email" #email="ngModel" required email>
+<div *ngIf="email.valid && email.touched">
+	<p>Please enter a valid email!</p>
+</div>
+_________________________________________
+setting default values for input controls
+_________________________________________
+
+if we bind the ngModel directive to a value, that sets the default value for a form element.
+
+e.g.
+<input type="text" [ngModel]="'defaultText'">
+will set defaultText as the default value in the textbox
+
+Instead of a direct value, we can also use a variable in the .ts file
