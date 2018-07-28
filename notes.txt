@@ -1067,5 +1067,28 @@ this.inputForm.form.patchValue(
 	}
 );
 
-________________________________________________________________
+_____________________
 
+Retreiving Form Data
+_____________________
+
+In the back-end, we can retreive the data submitted by treating the submitted form as a javascript object
+e.g.
+inputForm.value.inputName;
+
+If an element is wrapped inside and ngModelGroup, lets say called "userData", it will be accessed like
+e.g.
+inputForm.userData.inputName;
+
+_____________________
+Resetting Form Data
+_____________________
+
+If the form is known as inputForm in the back-end, we can reset the form like
+
+e.g.
+this.inputForm.reset();
+
+This resets to form to its initial untouched state.
+
+The reset function can also take a javascript object to set the input values of the form, just like the setValue() function.

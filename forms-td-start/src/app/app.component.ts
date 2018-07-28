@@ -11,14 +11,23 @@ export class AppComponent {
   @ViewChild('f') inputForm: NgForm;
   answer = '';
   defaultQuestion = 'pet';
+  submitted: boolean = false;
 
   genders: string[] = ['male', 'female'];
+
+  user = {
+    name: '',
+    email: '',
+    secretQuestion: '',
+    secretAnswer: '',
+    gender: ''
+  };
 
   suggestUserName() {
     const suggestedName = 'Superuser';
     this.inputForm.form.patchValue({
       userData: {
-        inputText: suggestedName
+        inputName: suggestedName
       }
     });
   }
@@ -31,7 +40,7 @@ export class AppComponent {
     this.inputForm.setValue(
       {
         userData: {
-        inputText: '',
+        inputName: '',
         inputEmail: '',
         },
         secret: 'pet',
@@ -42,6 +51,13 @@ export class AppComponent {
   }
 
   onSubmit() {
-    console.log(this.inputForm);
+    this.submitted = true;
+    this.user.name = this.inputForm.value.userData.inputName;
+    this.user.email = this.inputForm.value.userData.inputEmail;
+    this.user.secretQuestion = this.inputForm.value.secret;
+    this.user.secretAnswer = this.inputForm.value.userAnswer;
+    this.user.gender = this.inputForm.value.gender;
+
+    this.inputForm.reset();
   }
 }
