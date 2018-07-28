@@ -975,10 +975,97 @@ _________________________________________
 setting default values for input controls
 _________________________________________
 
-if we bind the ngModel directive to a value, that sets the default value for a form element.
+if we use property binding to bind the ngModel directive to a value, that sets the default value for a form element.
 
 e.g.
 <input type="text" [ngModel]="'defaultText'">
 will set defaultText as the default value in the textbox
 
 Instead of a direct value, we can also use a variable in the .ts file
+
+____________________________________________
+Reacting instantly to value changes in forms
+____________________________________________
+
+This can be done by using 2 way property binding on the ngModel directive on the control
+
+e.g.
+
+<div class="form-group">
+	<textarea [(ngModel)]="answer" name="enteredAnswer"></textarea>
+	<p>You entered:{{answer}}</p>
+</div>
+
+You will have to declare a property called answer in the .ts file.
+Now, any change made in the text in the text box is automatically shown after the "You entered:" of the <p> element
+
+______________
+ngModelGroup
+______________
+When we want to group multiple controls into one, we can use an encompassing div adorned with the ngModelGroup directive. This ngModelGroup needs to be given a unique name in the form.
+
+e.g
+<div ngModelGroup="userData">
+
+We can then use expressions like
+e.g.
+userData.valid and userData.touched
+
+
+
+	...
+</div>
+
+__________________________
+Working with Radio Buttons
+__________________________
+Working with radio buttons on Forms is not too different. Here is an example. Let's say we have list of strings in the .ts backend file, which we want to create radio buttons of
+e.g
+genders=['male', 'female'];
+
+In the front-end HTML file, we can create a radio button using
+e.g.
+<div class="radio" *ngFor="let gender of genders">
+	<label>
+		<input type="radio" ngModel name="gender" required>
+		{{gender}}
+	</label>
+</div>
+
+In this case, the same name property is applied to each individual radio button.
+Also, we can set the required property on every radio button to enforce that a value be selected for the control to be valid
+
+________________________
+setValue and patchValue
+________________________
+We can set the data on a form from the backend using the setValue and patchValue function.
+
+Using setValue, we can set the value of all the controls on the form in one go. If the NgForm object is referenced as an inputForm in the back-end, the code will be
+
+e.g.
+
+this.inputForm.setValue(
+	{
+		userData:{
+			inputName:'someone',
+			inputEmail:'somebody@somewhere'
+		}
+		defaultQuestion:'howdy?'
+	}
+);
+
+Note: We need to pass the entire form as a javascript object to the setValue method
+Note: in case of form elements encompassed by the NgModelGroup directive, the entry should be a javascript object with the name passed to the NgModelGroup directive, and this javascript object should have entries for each of its elements. The identifiers for elements woudl be the name of the element.
+
+We can set an individual element's value on a form object using the patchValue method. It is used as below
+e.g.
+
+this.inputForm.form.patchValue(
+	{userData:{
+			inputName:'Nobody'
+		}
+	}
+);
+
+________________________________________________________________
+
