@@ -955,7 +955,7 @@ Validating input in Template forms
 ____________________________________
 
 In order to impose validation, we can use the HTML keywords like "required" to enforce that an input has value, and "email" to enforce email like format. 
-Angular checks these on input elements and adds classes like ng-valid and ng-invalid, which can be used to style the controls to show error.
+Angular checks these on input elements and adds classes like ng-valid and ng-invalid, which can be used to style the controls to show errors.
 
 In the .css file, we can add styling targeting all input elements, which have been touched like below
 e.g.
@@ -1009,7 +1009,7 @@ e.g
 
 We can then use expressions like
 e.g.
-userData.valid and userData.touched
+userData.valid and userData.touched, similar to what we do with individual controls
 
 
 
@@ -1033,7 +1033,7 @@ e.g.
 </div>
 
 In this case, the same name property is applied to each individual radio button.
-Also, we can set the required property on every radio button to enforce that a value be selected for the control to be valid
+Also, we can set the required property on every radio button to enforce that a value be selected for the control
 
 ________________________
 setValue and patchValue
@@ -1055,7 +1055,7 @@ this.inputForm.setValue(
 );
 
 Note: We need to pass the entire form as a javascript object to the setValue method
-Note: in case of form elements encompassed by the NgModelGroup directive, the entry should be a javascript object with the name passed to the NgModelGroup directive, and this javascript object should have entries for each of its elements. The identifiers for elements woudl be the name of the element.
+Note: in case of form elements encompassed by the NgModelGroup directive, the entry should be a javascript object with the name passed to the NgModelGroup directive, and this javascript object should have entries for each of its elements. The identifiers for elements would be the name of the element.
 
 We can set an individual element's value on a form object using the patchValue method. It is used as below
 e.g.
@@ -1078,7 +1078,7 @@ inputForm.value.inputName;
 
 If an element is wrapped inside and ngModelGroup, lets say called "userData", it will be accessed like
 e.g.
-inputForm.userData.inputName;
+inputForm.value.userData.inputName;
 
 _____________________
 Resetting Form Data
@@ -1092,3 +1092,150 @@ this.inputForm.reset();
 This resets to form to its initial untouched state.
 
 The reset function can also take a javascript object to set the input values of the form, just like the setValue() function.
+_______________
+Reactive Forms
+_______________
+
+These are the similar to template driven forms, given then we use HTML to create the form input components. However, it is different in the way that we don't use a reference to the form from the HTML front-end. 
+
+We create a form in the back-end, and associate input controls of the html to it.
+
+That way, we can directly access the values of the form from the object in the back-end, rather than loading it from the @ViewChild('form-name-in-html') reference to the front-end form.
+
+Declaring a form using the reactive approach.
+
+In the back-end .ts file, declare a form object like
+
+e.g.
+signupForm:FormGroup;
+
+We would need to initialize this form, passing in all the controls we need from the form, as a JavaScript object.
+Each element of the JavaScript object is of the form
+<form control name>: new FormControl(<default_value>,<validators>,<async. validators>).
+We can pass null to the constructor if we don't want to set a default value.
+
+e.g.
+signupForm = new FormGroup({
+	username:new FormControl(null),
+	email: new FormControl('a@b.com')
+});
+
+Note: we may want to say 'username':new FormControl(null) if we don't want the value of username to be lost during minification
+
+Now, in the front-end form, we need to associate the form element to the back-end form object. We do it like this.
+
+e.g.
+<form [formGroup]="signupForm">
+
+</form>
+
+Also, we need to associate all input form controls to the FormControl objects in the back-end form.
+
+e.g.
+
+<label for="user">Enter Username</label>
+<input type="text" formControlName="username" id="user">
+
+This will link the input text object to the "username" FormControl object, of the inputForm FormGroup in the back-end.
+_____________________________________________________________________
+Adding Validators to controls when using the reactive forms approach
+_____________________________________________________________________
+
+In the template driven approach, we used HTML validators in the front end like email and required to set the validity requirements of each field.
+
+In the reactive approach however, we do this in the back-end, by using the validators array passed to the FormControl object, like
+
+e.g.
+username: new FormControl(null, Validators.required),
+email:	new FormControl(null, [Validators.required, Validators.email]),
+...
+
+_________________________________________________________________________
+notifying users of validation errors in the front-end for Reactive forms
+_________________________________________________________________________
+classes like ng-valid and ng-touched are applied to front-end form controls the same way as in the template driven approach.
+
+So in the CSS, something like this will still work
+e.g.
+input.ng-invalid.ng-touched{
+	border: 1px solid red;
+}
+
+If we want to have a text informing the user that there was a validation error, we would need to take slightly different approach that with the Template driven forms. 
+
+If our form is named signupForm in the back-end, and the control's name in the form is username, we need to do the following for showing a text on a validation error
+
+e.g.
+
+<span *ngIf="!signupForm.get('username').valid && signupForm.get('username').touched">
+	Please enter a valid username!
+</span>
+
+___________________
+Nesting FormGroups
+___________________
+
+We can nest FormGroups to create something similar to ngModelGroup which is used in the template driven approach.
+
+To do this, when declaring the form, we use an inner form group.
+
+e.g.
+signupForm = new FormGroup({
+	userData: new FormGroup({
+		name: new FormControl(null, Validators.required),
+		email: new FormControl(null, [Validators.required, Validators.email])
+	}),
+	gender: new FormControl('male',Validators.required),
+});
+
+Now, to get to the name element in the userData FormGroup, we use the code
+e.g.
+signupForm.userData.email
+
+Finally, in the front end, we need to nest our name and email form controls under something like
+e.g.
+
+<div formGroupName="userData">
+	<label>Enter Your Name:</label>
+	<input formControlName="name">
+	<label>Enter email: </label>
+	<input formControlName="email">
+</div>
+_________
+FormArray
+__________
+
+In order to store a group of controls, the count of which may vary we can use a FormArray. 
+Similar to a from group, it holds a group of controls. The controls however are stored as an array. However, unlike a FormGroup, these controls are not named, but are accessed by the index of the control inside the array.
+
+So, if we want to store a list of hobbies for the user as a FormArray, we can include into the form object, something like
+
+e.g.
+this.signupForm = new FormGroup(
+	'name': new FormControl(null),
+	'email': new FormControl(null),
+	'hobbies': new FormArray([])
+	);
+
+We can also initialize some FormControls in that, by passing them into the array -- like new FormArray([new FormControl(null)])
+
+Now, in order to push data into the FormArray, the code would be 
+e.g.
+(<FormArray>this.signupForm.get('hobbies')).push(new FormControl(null,[Validators.required]))
+Note: This is one of the few cases where we need use casting
+
+In the front end, we can have a button invoking a function to dynamically add items to the form array like below
+e.g.
+onAddHobby()
+{
+	(<FormArray>this.signupForm.get('hobbies')).push(new FormControl())
+}
+
+Also, in the front end, we can cycle through the Form array like below, 
+e.g.
+<div formArrayName="hobbies">
+	<div *ngFor="let control of signupForm.get('hobbies').controls; let i = index">
+		<input type="text" [formControlName]="i">
+	</div>
+</div>
+
