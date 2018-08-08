@@ -1278,3 +1278,41 @@ e.g.
 	You have entered an invalid username!
 </span>
 
+________________
+Async Validator
+----------------
+Just like we use custom validators, we can use Async validators, which can be used to give a time delayed validation response, probably by contacting a web service.
+
+first, we create a function which gives the delayed response. The function would be like that given below
+e.g.
+
+isForbiddenEmail(control: FormControl): Promise<any>|Observable<any> {
+	// we can then call the web service
+	return new Promise( (resolve, reject) => {/*calling a delayed response function*/setTimeout( () => {
+		if (control.value === 'forbidden@email.com'){
+			resolve({'forbiddenEmail':true})} /*there was an error*/
+		else {
+			resolve(null) /*no error*/
+		}
+	},1500);} );
+}
+
+The function returns a promise with the same type of javascript object as the normal validator.
+
+________________________________
+Status changes and Value changes
+--------------------------------
+
+The reactive form gives us 2 events which we can subscribe to -- valueChanged and statusChanged, which allows us to closely watch the form.
+
+We will use it like below
+e.g.
+this.signupForm.valueChanged.subscribe( (value) => {console.log(value)});
+
+and
+
+this.signupForm.statusChanged.subscribe( (status) => {console.log(status)});
+
+Note: These will be triggerred for every value change and status change for the form. We may be better of subscribing to the same event for each control.
+
+Note: setValue(), patchValue() and reset() work the same for Reactive forms as with Template driven forms
