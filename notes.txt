@@ -1239,3 +1239,42 @@ e.g.
 	</div>
 </div>
 
+__________________
+Custom Validators
+------------------
+
+We write a custom validator function like below 
+
+e.g.
+isForbiddenName(control: FormControl): {[s:string]:boolean} {
+	if (this.forbiddenName.indexOf(control.value) >= 0) {
+		return {'isForbiddenName':true}
+	}
+	return null;
+}
+
+The function takes in a FormControl which will be the control being validated. It returns a javascript object of the type key:value, where the key should be a string. This is the strange object which is specified as the return type for the function.
+
+Now, after validating, if we want to say that the validation did not pass, we need to return a javascript object, with the key being the error string, and the value being 'true'.
+
+Note: If the validation passes, we need to either return null or nothing.
+
+We use the custom validation function, be specifying it in the FormControl validators
+e.g.
+this.signupForm = new FormGroup(
+	name: new FormControl(null, [Validators.required, this.isForbiddenName.bind(this)]),
+	email: new FormControl(null, [Validators.email]));
+
+The reason we need to use the javascript bind function is so that the 'this' keyword resolves correctly, when this function is called outside the class' context.
+
+The string which is passed as the key part of the javascript return object of our custom validation function is passed into the error value of our control, if it fails. So, we can give custom error messages based on this.
+
+e.g. 
+
+<span *ngIf="signupForm.get('username').touched && !signupForm.get('username').valid && signupForm.get('username').errors['required']">
+	You need to enter a username!
+</span>
+<span *ngIf="signupForm.get('username').touched && !signupForm.get('username').valid && signupForm.get('username').errors['isForbiddenName']">
+	You have entered an invalid username!
+</span>
+
