@@ -971,6 +971,12 @@ e.g.
 <div *ngIf="email.valid && email.touched">
 	<p>Please enter a valid email!</p>
 </div>
+
+We can also check if an entered value conforms to a regular expression, by using the "pattern" validator. It is used like
+e.g.
+<input type="number" required pattern="^[1-9]+[0-9]*$">
+
+This will match only positive numbers, greater than 0
 _________________________________________
 setting default values for input controls
 _________________________________________
@@ -1103,6 +1109,8 @@ We create a form in the back-end, and associate input controls of the html to it
 That way, we can directly access the values of the form from the object in the back-end, rather than loading it from the @ViewChild('form-name-in-html') reference to the front-end form.
 
 Declaring a form using the reactive approach.
+
+First, import the "ReactiveFormsModule" in the app.module.ts file
 
 In the back-end .ts file, declare a form object like
 

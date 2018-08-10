@@ -9,26 +9,22 @@ import { RecipeService } from '../recipe.service';
   styleUrls: ['./recipe-edit.component.css']
 })
 export class RecipeEditComponent implements OnInit {
-  id:number;
-  editMode:boolean=true;
-  recipe:Recipe;
+  id: number;
+  editMode = true;
+  recipe: Recipe;
 
-  constructor(private activatedRoute:ActivatedRoute,
-    private recipeService:RecipeService) { }
+  constructor(private activatedRoute: ActivatedRoute,
+    private recipeService: RecipeService) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(
-      (params:Params) => 
-      {
-        if (params['id'])
-        {
-          this.id = parseInt(params['id']);
+      (params: Params) => {
+        if (params['id']) {
+          this.id = parseInt(params['id'], 10);
           this.recipe = this.recipeService.getRecipe(this.id);
           this.editMode = true;
-        }
-        else
-        {
-          //id doesn't exist
+        } else {
+          // id doesn't exist
           this.editMode = false;
         }
       }

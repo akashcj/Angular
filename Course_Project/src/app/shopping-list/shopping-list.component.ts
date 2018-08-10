@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./shopping-list.component.css']
 })
 export class ShoppingListComponent implements OnInit, OnDestroy {
-  
+
   ingredients: Ingredient[] = [];
   ingredientsChangedSubscription: Subscription;
 
@@ -26,6 +26,11 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ingredientsChangedSubscription.unsubscribe();
+  }
+
+  onEditItem(index: number) {
+    // ingredient editing starting
+    this.shoppingListService.ingredientEditStarted.next(index);
   }
 
 }
