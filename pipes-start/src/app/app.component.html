@@ -16,7 +16,7 @@
       <ul class="list-group">
         <li
           class="list-group-item"
-          *ngFor="let server of servers| filter:filterString:'status'" 
+          *ngFor="let server of servers| filter:filterString:'status'| reverse:'instanceType'|sort:'name'" 
           [ngClass]="getStatusClasses(server)">
           <span
             class="badge">
