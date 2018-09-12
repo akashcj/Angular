@@ -1454,3 +1454,26 @@ e.g.
 }
 
 This however comes with a hugh performance hit, as the function is called every time the page refreshes.
+
+________________
+The async pipe
+________________
+
+If we have a data which will be resolved asynchronously, we can use the 'async' pipe to wait for it to resolve before showing it.
+e.g. If we have the following code in the back-end which gives a delayed response
+
+delayedValue = new Promise((resolve, reject) => {
+	setTimeOut( ()=>{ resolve('stable'}, 2000)});
+
+If we have the following code in the front-end to display the value, 
+e.g.
+{{delayedValue}}
+
+The output would be something like "object Promise"
+
+However, we can use the async pipe, to have the value display only after it is resolved
+
+e.g.
+{{delayedValue|async}}
+
+would resolve to the output "stable", after 2 seconds.
