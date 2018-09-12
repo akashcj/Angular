@@ -977,6 +977,15 @@ e.g.
 <input type="number" required pattern="^[1-9]+[0-9]*$">
 
 This will match only positive numbers, greater than 0
+
+In the back-end .ts file, if we us a validator, we invoke it like below
+e.g.
+recipeForm = new FormGroup({
+	'name': new FormControl(null, Validators.required),
+	'amount': new FormControl(null, [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
+});
+
+This is one validator which is executed like a method -- all other validators only have their name passed to a FormControl constructor
 _________________________________________
 setting default values for input controls
 _________________________________________
@@ -1324,3 +1333,124 @@ this.signupForm.statusChanged.subscribe( (status) => {console.log(status)});
 Note: These will be triggerred for every value change and status change for the form. We may be better of subscribing to the same event for each control.
 
 Note: setValue(), patchValue() and reset() work the same for Reactive forms as with Template driven forms
+
+Note: We have a shortcut to assign values from forms to a model. if the form control names are the same as an internal model, we can directly assign the form controls to the model.
+e.g.
+if we have a model like below
+export class recipe{
+	string: name;
+	amount: number;
+}
+
+and we have a reactive form like
+
+editRecipeForm = new FormGroup({
+	'name': new FormControl(),
+	'amount': new FormControl()
+});
+
+we can directly assign to a recipe using
+
+myRecipe: recipe = editRecipeForm.value;
+
+______________
+Pipes
+______________
+An Angular 2 construct to transform output e.g. "{{username|uppercase}}" would transform the string in the username variable to all uppercase. uppercase is a built in pipe.
+________________
+Pipe Parameters
+________________
+Pipes can take parameters,
+e.g. the date pipe in this case is taking a parameter to output the full date
+{{serverDate|date:'fullDate'}}
+
+we can configure the date pipe to take in many parameters, 
+e.g.
+{{serverDate|date:'Ymd'}}
+for using a short date. The entire documentation for using pipes can be found at "https://angular.io/api?query=pipe"
+
+multiple parameters would be passed using additional ':' and the parameter, i.e. {{<variable>|<pipe_name>:'<param1>':'<param2>':'<param3>'}}
+
+_______________
+Chaining Pipes
+_______________
+Pipes can be chained one after the other. 
+e.g., we can have an uppercase date as follows
+{{serverDate|date:'shortDate'|uppercase}}
+
+______________________
+Creating Custom Pipes
+______________________
+
+In order to create a custom pipe, we need to define a class which implements the transform function of the PipeTransform interface. The transform function would need to take a parameter, which we can treat as a string, though the type is any. We also need to declare an @Pipe decorator to define the name with which this pipe would need to be referred to in code
+
+e.g.
+
+@import {PipeTransform} from '@angular/core';
+
+@Pipe({
+	name: 'shorten'
+});
+export class ShortenPipe implements PipeTransform {
+	transform(value: any) {
+		return value.substr(0,10);
+	}
+}
+
+Now, this needs to be included in app.module.ts under the "declarations" section.
+
+The pipe can then be used throughout the application like
+e.g.
+<p>
+	Server Name: {{serverName | shorten}}
+</p>
+
+We can also pass parameters to our type by just adding a parameter to the transform method in the pipe implementation in the .ts file
+e.g.
+transform (value: any, limit: number) {
+	transform(value: any) {
+		if (value.length > limit) {
+			.....
+		}
+	}
+}
+
+This can then be used in the markup like
+e.g. 
+<p>Server Name: {{server.name| shorten:15}}</p>
+
+We can also chain our pipe to other pipes.
+
+pipes can also be chained to an ngFor. So, if we have a pipe called filter, which filters out items of an ngFor list of items, we can use it like below. In this case, the "value" passed to the transform function would be an array
+
+e.g.
+<div ngFor="let i of items| filter:filterString:'stringValue'">
+....
+</div>
+
+The back-end code would be
+e.g.
+@Pipe({
+name: 'filter'
+})
+export class FilterPipe implements PipeTransform() {
+	transform (value: any, filterValue: string, filterProperty: string) {
+		const filteredItems = [];
+		
+		for (let item of value) {
+			if item[filterProperty] === filterValue {
+				filteredItems.push(item);
+			}
+		}
+		
+		return filteredItems;
+	}
+
+A pipe output is not refreshed once the data changes. We can however force this by adding an element in the @Pipe directive like
+e.g.
+@Pipe{
+	name: 'filter',
+	pure: false,
+}
+
+This however comes with a hugh performance hit, as the function is called every time the page refreshes.
