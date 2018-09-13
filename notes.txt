@@ -1477,3 +1477,25 @@ e.g.
 {{delayedValue|async}}
 
 would resolve to the output "stable", after 2 seconds.
+
+___________________________
+Posting an HTTP request
+_________________________
+
+in order to post and http request, we use the Http module (note the capital H in the begining), which needs to be imported from '@angular/http'
+
+we use a pre-built service, called http service by refering to in the constructor of the calling class.
+
+While we call the post method using the post method, we get the responses back when we subscribe.
+
+
+e.g.
+
+constructor(private httpService:Http) {}
+
+saveToServer(dataToSave: any[]) {
+    this.httpService.post( 'https://akash-learning-ng.firebaseio.com/data.json', dataToSave).subscribe(
+        (request) => {doSomethingOnSuccess},
+        {error} => {doSomethingOnError});
+
+In the above example, we are connecting to a realtime firebase db
