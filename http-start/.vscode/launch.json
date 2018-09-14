@@ -6,7 +6,7 @@
     "configurations": [
         {
             "type": "chrome",
-            "runtimeExecutable": "/usr/bin/chromium-browser",
+            // "runtimeExecutable": "/usr/bin/chromium-browser",
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:4200",

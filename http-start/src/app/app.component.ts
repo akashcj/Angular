@@ -31,10 +31,10 @@ export class AppComponent {
   }
 
   onSaveServers() {
-    console.log("Going to Save Servers");
+    console.log('Going to Save Servers');
     this.serverService.saveServers(this.servers).subscribe(
-      (response) => {console.log(response)},
-      (error) => { console.log(error) }
+      (response) => { console.log(response); },
+      (error) => { console.log(error); }
     );
   }
 

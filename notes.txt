@@ -1499,3 +1499,20 @@ saveToServer(dataToSave: any[]) {
         {error} => {doSomethingOnError});
 
 In the above example, we are connecting to a realtime firebase db
+
+________________________________________
+Adding custom headers to HTTP requests
+________________________________________
+
+in order to add headers to the http request, you need to import Angular Headers from '@angular/http'
+
+declare a header object like
+
+header: Headers = new Headers ({'content-type':'application/json'}); 
+return this.httpService.post('https://akash-learning-ng.firebaseio.com/data.json, dataToSave, {headers: header}).subscribe(
+	(request) => {Do something with the request},
+	(error) => {Do something with the error}
+);
+
+
+);

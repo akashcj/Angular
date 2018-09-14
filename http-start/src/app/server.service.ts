@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Headers, Http } from '@angular/http';
 
 @Injectable()
 export class ServerService {
@@ -7,6 +7,9 @@ export class ServerService {
   constructor(private httpService: Http) { }
 
   saveServers(servers: any[]) {
-    return this.httpService.post('https://akash-learning-ng.firebaseio.com/data.json', servers);
+    const header: Headers = new Headers({ 'Content-type': 'application/json'});
+    return this.httpService.post('https://akash-learning-ng.firebaseio.com/data.json',
+       servers,
+       {headers: header});
   }
 }
