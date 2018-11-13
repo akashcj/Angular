@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ServerService } from './server.service';
+import { Response } from '@angular/http';
+import { DatabaseService } from './database.service';
 
 @Component({
   selector: 'app-root',
@@ -19,9 +20,6 @@ export class AppComponent {
       id: this.generateId()
     }
   ];
-
-  constructor(private serverService:ServerService) {}
-
   onAddServer(name: string) {
     this.servers.push({
       name: name,
@@ -30,15 +28,25 @@ export class AppComponent {
     });
   }
 
-  onSaveServers() {
-    console.log('Going to Save Servers');
-    this.serverService.saveServers(this.servers).subscribe(
-      (response) => { console.log(response); },
-      (error) => { console.log(error); }
-    );
+  constructor(private dbService: DatabaseService) {
+
   }
 
   private generateId() {
     return Math.round(Math.random() * 10000);
+  }
+
+  onClickSaveData() {
+    this.dbService.saveData(this.servers).subscribe(
+      (data) => { console.log(data); },
+      (error) => { console.log(error); }
+    );
+  }
+
+  onClickGetData() {
+    this.dbService.getData().subscribe(
+      (data: Response) => { console.log (data.json()); },
+      (error) => { console.log (error); }
+    );
   }
 }
