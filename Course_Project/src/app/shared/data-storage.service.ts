@@ -2,6 +2,8 @@ import { Http, Response } from '@angular/http';
 import { RecipeService } from '../recipes/recipe.service';
 import { Injectable } from '@angular/core';
 
+import {Recipe} from '../recipes/recipe.model';
+
 @Injectable()
 export class DataStorageService {
 
@@ -16,7 +18,15 @@ export class DataStorageService {
     fetchRecipes() {
         this.httpService.get(this.dbPath).subscribe(
             (data: Response) => {
-                this.recipeService.setRecipes(data.json());
+                const recipes: Recipe[] = data.json();
+                // if there is no ingredients array, adding an empty array
+                for (const recipe of recipes) {
+                    if (!recipe.ingredients) {
+                        recipe.ingredients = [];
+                        console.log (recipe);
+                    }
+                }
+                this.recipeService.setRecipes(recipes);
             }
         );
     }
