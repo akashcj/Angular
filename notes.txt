@@ -749,7 +749,7 @@ Route Leaving Guards
 __________________________________
 Similar to route guards, which prevent navigating to a route, we can implmenent guards which prevent a user from leaving a route. This is mostly used when the user forgets to save something before navigating.
 
-However, creating such a guard is more involved. We need a class which implements a CanDeactivate interface, which itself is a generic interface. This interface, takes as a parameter, another interface, which declares the function which we would be using as the "route leaving guard". This function, is implemented in the component displayed by the route, where we want to keep the user at.
+However, creating such a guard is more involved. We need a class which implements a CanDeactivate interface, which is a generic interface. This interface, takes as a parameter, another interface, which declares the function which we would be using as the "route leaving guard". This function, is implemented in the component displayed by the route, where we want to keep the user at.
 
 e.g.
 
