@@ -1498,6 +1498,7 @@ saveToServer(dataToSave: any[]) {
 
 In the above example, we are connecting to a realtime firebase db. We would call the'put' method of the Http module for invoking the put API, but the usage is the same as above.
 
+Note: Unless we subscribe, the actual request is not sent.
 ________________________________________
 Adding custom headers to HTTP requests
 ________________________________________
@@ -1531,3 +1532,5 @@ export class myClass {
 		(error)=>{console.log(error);});
 	}
 }
+
+Note: For the get request to be sent, we need to subscribe
