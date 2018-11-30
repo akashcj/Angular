@@ -1534,3 +1534,62 @@ export class myClass {
 }
 
 Note: For the get request to be sent, we need to subscribe
+________________________________________________
+Authentication and Autorization
+------------------------------------------------
+
+Authentication and authorization are handled by 3rd party providers. In this tutorial, we use the google firebase API to store and retreive data. We can use firebase's inbuilt authentication mechanisms to try out authentication.
+
+--------------------------------
+Using firebase inside Angular
+--------------------------------
+First register the firebase SDK with our Angular development environment 
+
+npm install --save firebase
+
+Once this is done, where we want to use any firebase provided APIs, in the file we would include the code as
+import * as firebase from 'firebase';
+
+We would then invoke any firebase API as follows
+firebase.<API NAME>()
+e.g.
+
+firebase.auth().createUserWithEmailAndPassword(email, password);
+
+In order to use our Firebase database, we need to initialize the firebase connection to our database by calling 
+
+firebase.initializeApp({apiKey:'<Your Database API key>', authDomain:''});
+
+These values are obtained from the firebase database, under the "Project Overview"-->"Add Firebase to your web app", once a database has been created under a project.
+
+---------------------------------------
+Creating a realtime firebase database
+---------------------------------------
+Create a database in firebase by going to http://firebase.google.com, going to the console and then clicking on a new realtime datatabase.
+
+In order to develop in firebase, initially, everyone is provided access. We do this by logging into the firebase console--> realtime database --> rules and then setting the rules to
+"rules": {
+    ".read": "true",
+    ".write": "true"
+  }
+and then clicking on "Publish".
+
+However, if you want to provide only authenticated users access, you should set the rules to 
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}
+
+This is entirely an firebase concept, and would be different for different databases.
+
+We can register a userid and password to our firebase database by 
+
+Going to the authentication section of your database and enabling "Email/Password" under "Sign-in method".
+
+We can then create a user using the firebase.auth().createUserWithEmailAndPassword(email,password) method provided by the firebase SDK.
+
+We then sign in with auth().signInWithEmailAndPassword(email, password). When we call this method, we get a reply, which contains a token. This token is then sent with each request, to authenticate it as coming from a signed in user.
+In the case of firebase, the rest API call would need to be suffixed with '?auth='+token;
