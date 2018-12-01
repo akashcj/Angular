@@ -1593,3 +1593,75 @@ We can then create a user using the firebase.auth().createUserWithEmailAndPasswo
 
 We then sign in with auth().signInWithEmailAndPassword(email, password). When we call this method, we get a reply, which contains a token. This token is then sent with each request, to authenticate it as coming from a signed in user.
 In the case of firebase, the rest API call would need to be suffixed with '?auth='+token;
+
+----------------------------------
+Multiple Modules in code
+--------------------------
+We can have our code split into multiple modules for ease of maintenance. Each sub-module is called a feature module. 
+For this, we need to
+1. Create a file called something like myMod.module.ts
+2. export a class in it like 
+	export class myModModule {
+
+	}
+3. decorate the class with the @NgModule directive. NgModule needs to be imported from @angular/core.
+e.g.
+@NgModule(
+	{
+		imports: [],
+		declarations: [],
+	}
+);
+	where the imports array would have all the modules imported into this module and the declarations sectin would have all the components declared in this module
+4. include this module into the appModule, under the appModule's "imports:" section
+
+Note: We cannot have the same Directive/Pipe imported into 2 separate modules. E.g. if we have a DropDown directive imported in both the appModule and our child myModModule, for the code to compile, we should keep it only in one module. It won't work in the other module, though...so we would need to use something called shareModules
+
+5. If we have routing in the appModule, we can move the routing corresponding to the child module into the  sub module. However, there are a few things to take care of
+
+5.1. Create a file to handle the routing, just on the lines of the app-routing.module.ts
+5.2. an arrary of type "Routes" , holding the routing configuration, where "Routes" is is imported from the @angular/router module
+5.3. In the file, we export a class, and decorate with the NgModel directive, with the imports array in the ngModel directive having the entry for the routes 
+e.g.
+	@NgModule({imports:[RouterModule.forChild(myModRoutes)],
+				exports:[RouterModule]})
+5.4. The final class would look like below
+e.g
+	import {NgModel} from '@angular/core';
+	import {Router, RouterModule} from '@angular/router';
+
+	const myModRoutes: Routes = [
+		{path:'abc', component: myComponent	},
+		.
+		.
+		.
+	];
+	@NgModule({
+		imports:[RouterModule.forChild(myModRoutes)],
+		exports:[RouterModule]
+	})
+	export class myModRouting{}
+5.5 Import the above class into the child module class, in its imports array in the NgModule directive. The feature module would also need to include commonModule, which provides some angular common features like ngIf etc. This funcitonality is provided in the main module via the BrowserModule import
+
+-----------------
+Shared Modules
+-----------------
+
+If we need to use directive or a pipe in multiple modules, we cannot use it in the 'declarations' array of the @NgModel() directive, but we need to create a shared module, which is imported into both these modules.
+
+e.g. of a SharedModule, which could be in a file called shared.module.ts
+
+@import {NgModel, commonModule} from '@angular/core';
+@import {dropDownDirective} from '/my-path/to/directive';
+
+@NgModel(
+	{
+		imports: [dropDownDirective],
+		exports: [commonModule, dropDownDirective]
+	}
+)
+export class SharedModule{}
+
+Note: we don't need to have a module in the 'imports' section of the NgModel directive, in order to export it
+
+Now, in every module where we need to use the directive, we simply add it to the 'imports' section of that module's NgModel directive.
