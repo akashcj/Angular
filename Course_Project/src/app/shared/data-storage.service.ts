@@ -15,7 +15,8 @@ export class DataStorageService {
         private authService: AuthService) {}
 
     saveRecipes() {
-        return this.httpService.put(this.dbPath, this.recipeService.getRecipes());
+        let token = this.authService.getToken();
+        return this.httpService.put(this.dbPath + '?auth=' + token, this.recipeService.getRecipes());
     }
 
     fetchRecipes() {

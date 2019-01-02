@@ -1612,15 +1612,15 @@ e.g.
 		declarations: [],
 	}
 );
-	where the imports array would have all the modules imported into this module and the declarations sectin would have all the components declared in this module
-4. include this module into the appModule, under the appModule's "imports:" section
+	where the imports array would have all the modules imported into this module and the declarations section would have all the components declared in this module
+4. include this module into appModule, under the appModule's "imports:" section
 
-Note: We cannot have the same Directive/Pipe imported into 2 separate modules. E.g. if we have a DropDown directive imported in both the appModule and our child myModModule, for the code to compile, we should keep it only in one module. It won't work in the other module, though...so we would need to use something called shareModules
+Note: We cannot have the same Directive/Pipe imported into 2 separate modules. E.g. if we have a "DropDown" directive imported in both the appModule and our child myModModule, for the code to compile, we should keep it only in one module. It won't work in the other module, though...so we would need to import this into a common module, and then import the module into both 
 
 5. If we have routing in the appModule, we can move the routing corresponding to the child module into the  sub module. However, there are a few things to take care of
 
-5.1. Create a file to handle the routing, just on the lines of the app-routing.module.ts
-5.2. an arrary of type "Routes" , holding the routing configuration, where "Routes" is is imported from the @angular/router module
+5.1. Create a file to handle the routing, on the lines of the app-routing.module.ts
+5.2. Create an arrary of type "Routes" , holding the routing configuration, where "Routes" is is imported from the @angular/router module
 5.3. In the file, we export a class, and decorate with the NgModel directive, with the imports array in the ngModel directive having the entry for the routes 
 e.g.
 	@NgModule({imports:[RouterModule.forChild(myModRoutes)],
