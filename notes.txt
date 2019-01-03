@@ -1665,3 +1665,27 @@ export class SharedModule{}
 Note: we don't need to have a module in the 'imports' section of the NgModel directive, in order to export it
 
 Now, in every module where we need to use the directive, we simply add it to the 'imports' section of that module's NgModel directive.
+
+________________________
+Lazy loading
+________________________
+
+We can use shared modules to optimize our app, by only loading modules on demand. For this, we need token
+
+1. The module which we want to load lazily should not be included to the app module's @NgModule directive's imports array
+2. To the Routes array, instead of referencing the component like
+
+Routes[]=[
+	{path:'recipes', component:RecipesComponent}
+]
+
+we would need to have the route referencing a string like below
+
+Routes[]= [
+	{path:'recipes', loadChildren:'./path/to/recipes.module#RecipesModuleClassName'}
+]
+
+Now, when the original angular app loads, it doesn't load the RecipesComponent above. However, when it encounters a <home>/recipes URL, it loads the recipes module which is passed as the string.
+
+Note: When we modify the Routes array in the app module to lazy load a module, any routing inside the lazily loaded module automatically gets prefixed with the path specified in the app module routing. So, if we have a route in the RecipesModule with path:'', it will be loaded in the browser, when the user navigates to <home>/recipes.
+
