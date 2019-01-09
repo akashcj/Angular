@@ -1689,3 +1689,20 @@ Now, when the original angular app loads, it doesn't load the RecipesComponent a
 
 Note: When we modify the Routes array in the app module to lazy load a module, any routing inside the lazily loaded module automatically gets prefixed with the path specified in the app module routing. So, if we have a route in the RecipesModule with path:'', it will be loaded in the browser, when the user navigates to <home>/recipes.
 
+________________
+Core Modules
+----------------
+We can move out non-integral parts of the application out of the app-module, into a core module, for code structuring purposes
+
+Declaring a core module is similar to declaring other modules. What we need to do is
+1. Create a folder for the Core Module
+2. Move the components which need to be part of the core module this folder
+3. create a file for the core module where you would
+	a. declare a class 
+	b. decorate this class with an @NgModule({}) directive 
+	c. in the declarations array of the @NgModule directive decoration, add all the components and directives used by the module
+	d. in the imports array of the @NgModule directive decoration, add all the modules which are required by this core module.
+	This would include the AppRoutingModule, if the core module implements any routing functionality like router.navigate
+	e. in the exports array of the @NgModule directive decorator,  include all components which are required by the app module. This may 
+	include components which were imported to the core module, like the AppRoutingModule
+4. Include the core module in the imports array of the @NgModule({}) decorator of the app module.
