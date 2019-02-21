@@ -1534,9 +1534,71 @@ export class myClass {
 }
 
 Note: For the get request to be sent, we need to subscribe
-________________________________________________
-Authentication and Autorization
+Note: We can convert the data automatically into a javascript object only if the data is returned as a json object
+
 ------------------------------------------------
+Http client
+________________________________________________
+
+POST request using the Http Client module
+
+Starting Angular 4.2, we have a another module to use for Http requests. This is the HttpClient module. In this module, we get a few additional features over the original Http module, though the original module is not depricated or unsafe.
+
+The HttpClientModule is to be imported from @angular/common/Http
+
+The post requests are the same. e.g.
+
+export class MyClass() {
+		constructor(private httpClientService:HttpClient) {
+	}
+
+	postData() {
+		httpClientService.post("http://url-to-post-data", data_to_post, {headers: header}).subscribe(
+			(success)=>{do something on success},
+			(error) => {do something on error})
+		);
+	}
+}
+
+GET request using the Http client module
+
+The get requests are similar, e.g.
+
+export class MyClass() {
+	constructor(private httpClientService:HttpClient) {}
+
+	getData(){
+		httpClientService.get("url to get data").subscribe(
+			(data :Recipe[]) => {
+				do something;
+			},
+			(error) => {
+				do something with error;
+			}
+		);
+	}
+}
+
+However, note that the data type returned need not be of type Response. It can be any data type which we feel the data would be in the form of. Also, we can also be setting the type of the returned data to recipe like
+	httpClientService.get<Recipe[]>("url-to-get-data").subscribe(
+	(recipes) => {do something with recipes}
+	(error) => {do something with error}
+	);
+Note: Automatic conversion from one data type to another works only if the returned data is of type json
+
+The HttpClient also lets us to process data of other types, by changing a parameter, e.g.
+httpClientService.get<Recipe[]>("url-to-get-data", {
+	observe:'body',
+	dataType: 'Text'
+	}).subscribe(
+	(data)=>{},
+	(error)=>{}
+	);
+This allows us to process multiple return types. The default values are observe:'response' and dataType:'json'
+
+________________________________
+Authentication and Autorization
+--------------------------------
 
 Authentication and authorization are handled by 3rd party providers. In this tutorial, we use the google firebase API to store and retreive data. We can use firebase's inbuilt authentication mechanisms to try out authentication.
 
@@ -1594,7 +1656,7 @@ We can then create a user using the firebase.auth().createUserWithEmailAndPasswo
 We then sign in with auth().signInWithEmailAndPassword(email, password). When we call this method, we get a reply, which contains a token. This token is then sent with each request, to authenticate it as coming from a signed in user.
 In the case of firebase, the rest API call would need to be suffixed with '?auth='+token;
 
-----------------------------------
+--------------------------
 Multiple Modules in code
 --------------------------
 We can have our code split into multiple modules for ease of maintenance. Each sub-module is called a feature module. 
@@ -1615,7 +1677,7 @@ e.g.
 	where the imports array would have all the modules imported into this module and the declarations section would have all the components declared in this module
 4. include this module into appModule, under the appModule's "imports:" section
 
-Note: We cannot have the same Directive/Pipe imported into 2 separate modules. E.g. if we have a "DropDown" directive imported in both the appModule and our child myModModule, for the code to compile, we should keep it only in one module. It won't work in the other module, though...so we would need to import this into a common module, and then import the module into both 
+Note: We cannot have the same Directive/Pipe imported into 2 separate modules. E.g. if we have a "DropDown" directive imported in both the appModule and our child myModModule, for the code to compile, we should keep it only in one module. It won't work in the other module, though...so we would need to import this into a common module, and then import the common module into both
 
 5. If we have routing in the appModule, we can move the routing corresponding to the child module into the  sub module. However, there are a few things to take care of
 
@@ -1706,3 +1768,34 @@ Declaring a core module is similar to declaring other modules. What we need to d
 	e. in the exports array of the @NgModule directive decorator,  include all components which are required by the app module. This may 
 	include components which were imported to the core module, like the AppRoutingModule
 4. Include the core module in the imports array of the @NgModule({}) decorator of the app module.
+
+____________________________
+Ahead of Time compilation
+----------------------------
+use "ng build --prod --aot" instead of "ng serve"
+
+-------------------------------
+Preloading a lazy loaded module
+_______________________________
+
+When we use lazy loading, the required angular code is loaded only when the user accesses the module to be lazily loaded. This can lead to delays when the user wants to access the functionality. To solve this, we can use lazy loading, to allow the module to be loaded lazily, but immediately after all the important parts of the application are loaded. That way, the lazy loaded module is also preloaded. To do this, in the app routing module, add a preloading strategy as below
+
+@NgModule{
+	imports:[RouterModule.forRoot(appRoutes, {preloadingStrategy:PreloadAllRoutes})],
+	exports:[RouterModule]
+}
+
+where PreloadAllRoutes needs to be imported from @angular/router
+
+-------------------
+Deploying the App
+___________________
+
+In order to deploy an angular app, we need to
+1. build the app using production options e.g. ng build --prod --aot
+	Now, all the required files are in the dist folder
+2. copy the files in the dist folder to the public folder where we plan to host the app. The index.html app should be in this folder
+3. Allow website hosting on the public folder. This varies on various sites
+4. Set the default page to index.html and the error page also to index.html
+5. If required, give anonymous users read access so that they can view to contents of the site when the browse to it
+6. Navigate to the hosted site -- the path would be given on the settings where we allow the folder to host a static app

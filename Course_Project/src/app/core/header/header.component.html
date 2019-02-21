@@ -30,7 +30,7 @@
                 </ul>
             </li>
 
-            <li>
+            <li *ngIf="isAuthenticated()">
                 <a class="cursor:pointer" (click)="onLogout()">Logout</a>
             </li>
                 
