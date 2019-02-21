@@ -1534,6 +1534,30 @@ export class myClass {
 }
 
 Note: For the get request to be sent, we need to subscribe
+_____________________________
+Http Client Events
+----------------------------
+
+Using the angular http client module, we can subscribe to events from get and put, other than the final response. To do this, we need to 
+
+1. specify an additional argument to the get/put method specifying that we want to observe the event
+2. Handling the event. The handler will be called multiple times, once for each event that is returned. It can be used to track progress
+
+e.g.
+In the class implementing the calls to a 3rd party url
+
+constructor(private httpClient: HttpClient) {}
+
+putSomeData(dataToPut) {
+	return this.httpClient.put('some_url', dataToPut, {observe:'events'});
+}
+
+And in the calling function, we would need to subscribe to the method call like
+
+putClassObject.putSomeData(data).subscribe( (response:HttpEvent<Object>)=> {
+	console.log(response});
+}
+
 ________________________________________________
 Authentication and Autorization
 ------------------------------------------------
