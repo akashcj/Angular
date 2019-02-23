@@ -1628,12 +1628,26 @@ e.g.
 
 httpClientInstance.put('url_to_put_to', data_structure_to_put, {
 		observe:'body',
-		params: new HttpParams().add('key1', 'value1').append('key2', 'value2')
+		params: new HttpParams().set('key1', 'value1').append('key2', 'value2')
 	});
 
 --------------------------------
 Http Client monitor progress
 --------------------------------
+
+We can use the new Http Client module to also monitor progress of a request. For this, we would first need to create an HttpRequest object like
+
+e.g
+
+const req = new HttpRequest('PUT', 'url_to_put_to', data_to_put, {
+	reportProgress:true,
+	params: new HttpParams().set('key', 'value')
+	});
+HttpClientInstance.request(req).subscribe(
+	(data) => {console.log(data)});
+
+Now, we will see that there is a response of type 3, which has a loaded and a total value. This would be reporting the progress of the request, and the loaded vs the total can be used to set up a progress bar
+
 --------------------------------
 Authentication and Autorization
 --------------------------------
