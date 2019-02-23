@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { AuthService } from 'src/app/auth/auth.service';
+// import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
     selector: 'app-header',
@@ -14,7 +15,7 @@ export class HeaderComponent {
 
     onSaveData() {
         this.dataStorageService.saveRecipes().subscribe(
-            (data) => console.log(data)
+            (data) => {console.log(data);}
         );
     }
 
