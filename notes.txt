@@ -1649,6 +1649,11 @@ HttpClientInstance.request(req).subscribe(
 Now, we will see that there is a response of type 3, which has a loaded and a total value. This would be reporting the progress of the request, and the loaded vs the total can be used to set up a progress bar
 
 --------------------------------
+Interceptors
+--------------------------------
+Can be used to make changes application wide to intercept and change http requests
+
+--------------------------------
 Authentication and Autorization
 --------------------------------
 
